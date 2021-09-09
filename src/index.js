@@ -1,48 +1,44 @@
 // Importing packages
-// import { toList } from "./assets/kian-packages/Float32ToObject.js";
 const toList = require('./Float32ToObject.js');
-const shortestPathArray = require("./ShortestPathArray.js");
+const bestBetweenness = require("./bestBetweenness");
 
-function getAllFuncs(toCheck) {
-    const props = [];
-    let obj = toCheck;
-    do {
-        props.push(...Object.getOwnPropertyNames(obj));
-    } while (obj = Object.getPrototypeOf(obj));
-
-    return props.sort().filter((e, i, arr) => {
-        if (e != arr[i + 1] && typeof toCheck[e] == 'function') return true;
-    });
-}
 // Requirements for graph
 let createGraph = require('ngraph.graph');
 let wgl = require('w-gl');
 let graph = createGraph();
 let path = require('ngraph.path');
 
-graph.addNode("a", { x: 0, y: 0 });
-graph.addNode("b", { x: 2, y: 3 });
-graph.addNode("c", { x: 10, y: 5 });
-graph.addNode("d", { x: -10, y: 4 });
-graph.addNode("e", { x: 2, y: 4 });
-graph.addNode("f", { x: 13, y: 11 });
-graph.addNode("g", { x: -5, y: 15 });
-graph.addNode("h", { x: 6, y: 15 });
 
-graph.addLink('a', 'b');
-graph.addLink('b', 'c', {});
-graph.addLink('b', 'e', {});
-graph.addLink('e', 'd', {});
-graph.addLink('e', 'f', {});
-graph.addLink('e', 'g', {});
-graph.addLink('e', 'h', {});
-graph.addLink('g', 'h', {});
+
+
+graph.addNode("b", { x: 0, y: 0 });
+graph.addNode("a", { x: 3, y: -4 });
+graph.addNode("c", { x: 3, y: 4 });
+graph.addNode("d", { x: 4, y: 2 });
+graph.addNode("e", { x: 6, y: 1 });
+graph.addNode("f", { x: 8, y: 5 });
+graph.addNode("g", { x: 10, y: 4 });
+graph.addNode("i", { x: 10, y: 8 });
+graph.addNode("h", { x: 13, y: 6 });
+
+graph.addLink("a", "b");
+graph.addLink("b", "d");
+graph.addLink("b", "c");
+graph.addLink("c", "d");
+graph.addLink("d", "e");
+graph.addLink("e", "f");
+graph.addLink("f", "g");
+graph.addLink("f", "i");
+graph.addLink("g", "i");
+graph.addLink("i", "h");
+graph.addLink("g", "h");
+
 let shortestPath = path.aStar(graph, {
     distance(fromNode, toNode, link) {
         return 1;
     }
 });
-
+console.log(bestBetweenness(graph));
 let canvas = document.getElementById("betweenness-id");
 scene = wgl.scene(canvas);
 scene.setClearColor(16 / 255, 16 / 255, 16 / 255, 1);

@@ -1,6 +1,5 @@
 const path = require('ngraph.path');
-const shortestPathArray = require("./shortestPathArray");
-
+const shortestPathArray = require("./ShortestPathArray.js");
 
 function bestBetweenness(graph) {
     let aStarFinder = path.aStar(graph);
