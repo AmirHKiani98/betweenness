@@ -1,0 +1,5 @@
+/*!
+ * wgl v0.4.0
+ * (c) 2017 Andrei Kashcha.
+ * Released under the MIT License.
+ */

@@ -1,0 +1,6 @@
+node_modules
+!node_modules/w-gl
+!node_modules/ngraph.events
+!node_modules/ngraph.path
+!node_modules/ngraph.graph
+!*/src/

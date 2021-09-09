@@ -1,28 +1,86 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+function toList(float32Array) {
+    let i = 0;
+    var object = [];
+    var from = {};
+    var to = {};
+    for (let i = 0; i < float32Array.length; i++) {
+        let value = float32Array[i];
+        switch (i % 4) {
+            case 0:
+                from.x = value;
+                break;
+            case 1:
+                from.y = value;
+
+                break;
+            case 2:
+                to.x = value;
+                break;
+            case 3:
+                to.y = value;
+                object.push({ from, to })
+                from = {};
+                to = {};
+                break;
+            default:
+                break;
+        }
+    }
+    return object;
+}
+},{}],2:[function(require,module,exports){
+// Importing packages
+// import { toList } from "./assets/kian-packages/Float32ToObject.js";
+const toList = require('./assets/kian-packages/Float32ToObject.js');
+console.log(toList([1, 2, 3, 4]));
+
+function getAllFuncs(toCheck) {
+    const props = [];
+    let obj = toCheck;
+    do {
+        props.push(...Object.getOwnPropertyNames(obj));
+    } while (obj = Object.getPrototypeOf(obj));
+
+    return props.sort().filter((e, i, arr) => {
+        if (e != arr[i + 1] && typeof toCheck[e] == 'function') return true;
+    });
+}
+// Requirements for graph
 let createGraph = require('ngraph.graph');
 let wgl = require('w-gl');
 let graph = createGraph();
 let path = require('ngraph.path');
 
-graph.addLink('a', 'b', { weight: 10 });
-graph.addLink('a', 'c', { weight: 10 });
-graph.addLink('c', 'd', { weight: 1 });
-graph.addLink('b', 'd', { weight: 10 });
-let pathFinder = path.aStar(graph, {
-    // We tell our pathfinder what should it use as a distance function:
+graph.addNode("a", { x: 0, y: 0 });
+graph.addNode("b", { x: 2, y: 3 });
+graph.addNode("c", { x: 10, y: 5 });
+graph.addNode("d", { x: -10, y: 4 });
+graph.addNode("e", { x: 2, y: 4 });
+graph.addNode("f", { x: 13, y: 11 });
+graph.addNode("g", { x: -5, y: 15 });
+graph.addNode("h", { x: 6, y: 15 });
+
+graph.addLink('a', 'b');
+graph.addLink('b', 'c', {});
+graph.addLink('b', 'e', {});
+graph.addLink('e', 'd', {});
+graph.addLink('e', 'f', {});
+graph.addLink('e', 'g', {});
+graph.addLink('e', 'h', {});
+graph.addLink('g', 'h', {});
+let shortestPath = path.aStar(graph, {
     distance(fromNode, toNode, link) {
-        // We don't really care about from/to nodes in this case,
-        // as link.data has all needed information:
-        return link.data.weight;
+        return 1;
     }
 });
-console.log(pathFinder.find('a', 'd'));
+
 let canvas = document.getElementById("betweenness-id");
 scene = wgl.scene(canvas);
 scene.setClearColor(16 / 255, 16 / 255, 16 / 255, 1);
 scene.setClearColor(1, 1, 1, 1)
 
-let initialSceneSize = 80 / 8;
+let initialSceneSize = 10;
 scene.setViewBox({
     left: -initialSceneSize,
     top: -initialSceneSize,
@@ -30,16 +88,22 @@ scene.setViewBox({
     bottom: initialSceneSize,
 })
 scene.setPixelRatio(2);
-let lines = new wgl.WireCollection(5);
-lines.add({ from: { x: 2, y: 3 }, to: { x: 3, y: 4 } });
-lines.add({ from: { x: 3, y: 3 }, to: { x: 3, y: 4 } });
-lines.add({ from: { x: 4, y: 3 }, to: { x: 3, y: 4 } });
-lines.add({ from: { x: 5, y: 3 }, to: { x: 3, y: 4 } });
-lines.add({ from: { x: 6, y: 3 }, to: { x: 3, y: 4 } });
+var lines = new wgl.WireCollection(graph.getLinksCount());
+graph.forEachLink(function(link) {
+    let from = graph.getNode(link.fromId).data;
+    let to = graph.getNode(link.toId).data;
+    lines.add({ from, to });
+});
+// Find best betweenness
+var allnodes = [];
+graph.forEachNode(function(node) {
+    allnodes.push(node.id);
+})
+console.log(shortestPath);
 
 lines.color = { r: 0 / 255, g: 0 / 255, b: 0 / 255, a: 1 }
 scene.appendChild(lines);
-},{"ngraph.graph":3,"ngraph.path":12,"w-gl":13}],2:[function(require,module,exports){
+},{"./assets/kian-packages/Float32ToObject.js":1,"ngraph.graph":4,"ngraph.path":13,"w-gl":14}],3:[function(require,module,exports){
 module.exports = function eventify(subject) {
   validateSubject(subject);
 
@@ -129,7 +193,7 @@ function validateSubject(subject) {
   }
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * @fileOverview Contains definition of the core graph object.
  */
@@ -718,7 +782,7 @@ function makeLinkId(fromId, toId) {
   return fromId.toString() + '👉 ' + toId.toString();
 }
 
-},{"ngraph.events":2}],4:[function(require,module,exports){
+},{"ngraph.events":3}],5:[function(require,module,exports){
 /**
  * Based on https://github.com/mourner/tinyqueue
  * Copyright (c) 2017, Vladimir Agafonkin https://github.com/mourner/tinyqueue/blob/master/LICENSE
@@ -842,7 +906,7 @@ NodeHeap.prototype = {
     setNodeId(item, pos);
   }
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Performs suboptimal, greed A Star path finding.
  * This finder does not necessary finds the shortest path. The path
@@ -1073,7 +1137,7 @@ function aStarBi(graph, options) {
   }
 }
 
-},{"./NodeHeap":4,"./defaultSettings":7,"./heuristics":8,"./makeSearchStatePool":9}],6:[function(require,module,exports){
+},{"./NodeHeap":5,"./defaultSettings":8,"./heuristics":9,"./makeSearchStatePool":10}],7:[function(require,module,exports){
 /**
  * Performs a uni-directional A Star search on graph.
  * 
@@ -1220,7 +1284,7 @@ function reconstructPath(searchState) {
   return path;
 }
 
-},{"./NodeHeap":4,"./defaultSettings.js":7,"./heuristics":8,"./makeSearchStatePool":9}],7:[function(require,module,exports){
+},{"./NodeHeap":5,"./defaultSettings.js":8,"./heuristics":9,"./makeSearchStatePool":10}],8:[function(require,module,exports){
 // We reuse instance of array, but we trie to freeze it as well,
 // so that consumers don't modify it. Maybe it's a bad idea.
 var NO_PATH = [];
@@ -1278,7 +1342,7 @@ function setH1(node, heapIndex) {
 function setH2(node, heapIndex) {
   node.h2 = heapIndex;
 }
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = {
   l2: l2,
   l1: l1
@@ -1307,7 +1371,7 @@ function l1(a, b) {
   return Math.abs(dx) + Math.abs(dy);
 }
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
  * This class represents a single search node in the exploration tree for
  * A* algorithm.
@@ -1372,7 +1436,7 @@ function makeSearchStatePool() {
   }
 }
 module.exports = makeSearchStatePool;
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = nba;
 
 var NodeHeap = require('../NodeHeap');
@@ -1631,7 +1695,7 @@ function reconstructPath(searchState) {
   return path;
 }
 
-},{"../NodeHeap":4,"../defaultSettings.js":7,"../heuristics":8,"./makeNBASearchStatePool.js":11}],11:[function(require,module,exports){
+},{"../NodeHeap":5,"../defaultSettings.js":8,"../heuristics":9,"./makeNBASearchStatePool.js":12}],12:[function(require,module,exports){
 module.exports = makeNBASearchStatePool;
 
 /**
@@ -1751,14 +1815,14 @@ function makeNBASearchStatePool() {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = {
   aStar: require('./a-star/a-star.js'),
   aGreedy: require('./a-star/a-greedy-star'),
   nba: require('./a-star/nba/index.js'),
 }
 
-},{"./a-star/a-greedy-star":5,"./a-star/a-star.js":6,"./a-star/nba/index.js":10}],13:[function(require,module,exports){
+},{"./a-star/a-greedy-star":6,"./a-star/a-star.js":7,"./a-star/nba/index.js":11}],14:[function(require,module,exports){
 /*!
  * wgl v0.4.0
  * (c) 2017 Andrei Kashcha.
@@ -4614,4 +4678,4 @@ module.exports = {
 
 })));
 
-},{}]},{},[1]);
+},{}]},{},[2]);

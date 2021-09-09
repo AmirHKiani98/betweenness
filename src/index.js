@@ -1,7 +1,7 @@
 // Importing packages
 // import { toList } from "./assets/kian-packages/Float32ToObject.js";
-const toList = require('./assets/kian-packages/Float32ToObject.js');
-console.log(toList([1, 2, 3, 4]));
+const toList = require('./Float32ToObject.js');
+const shortestPathArray = require("./ShortestPathArray.js");
 
 function getAllFuncs(toCheck) {
     const props = [];
