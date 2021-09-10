@@ -1,6 +1,8 @@
 // Importing packages
 const toList = require('./Float32ToObject.js');
 const bestBetweenness = require("./bestBetweenness");
+const getClickedCoordinates = require("./GetClickedCoordinates");
+
 
 // Requirements for graph
 let createGraph = require('ngraph.graph');
@@ -67,3 +69,12 @@ console.log(shortestPath);
 
 lines.color = { r: 0 / 255, g: 0 / 255, b: 0 / 255, a: 1 }
 scene.appendChild(lines);
+
+
+document.body.addEventListener('mousedown', handleMouseDown, true);
+
+
+function handleMouseDown(e) {
+    s = getClickedCoordinates(e);
+    console.log(s);
+}
