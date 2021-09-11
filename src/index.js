@@ -38,7 +38,6 @@ graph.addLink("f", "i");
 graph.addLink("g", "i");
 graph.addLink("i", "h");
 graph.addLink("g", "h");
-console.log(bestBetweenness(graph));
 let shortestPath = path.aStar(graph, {
     distance(fromNode, toNode, link) {
         return 1;
@@ -86,8 +85,9 @@ function initialize() {
     }).then((previousResult) => {
         document.body.addEventListener('click', handleMouseDown, true);
     })
-    console.log(scene);
-    console.log(graph);
+
+    $("#find-best-betweenness").click(findBestBetweenness);
+
     $("#reset-graph").click(function() {
         scene.removeChild(lines);
         graph.clear();
@@ -112,8 +112,8 @@ function updatePathsStrokes() {
     }
 }
 
-function bestBtweenness(event) {
-
+function findBestBetweenness(event) {
+    console.log(bestBetweenness(graph));
 }
 
 function handleMouseDown(e) {

@@ -1,4 +1,4 @@
-shortestPathString = require("")
+shortestPathString = require(".")
 let createGraph = require('ngraph.graph');
 let path = require('ngraph.path');
 let graph = createGraph();
