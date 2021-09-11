@@ -12,7 +12,13 @@ graph.addNode("f", { x: 8, y: 5 });
 graph.addNode("g", { x: 10, y: 4 });
 graph.addNode("i", { x: 10, y: 8 });
 graph.addNode("h", { x: 13, y: 6 });
+myList = []
+graph.forEachNode(function(node) {
+    data = node.data;
+    myList.push(data.x, data.y)
+})
 
+console.log(new Int32Array(myList))
 graph.addLink("a", "b");
 graph.addLink("b", "d");
 graph.addLink("b", "c");

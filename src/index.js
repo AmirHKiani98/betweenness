@@ -2,8 +2,9 @@
 const toList = require('./Float32ToObject.js');
 const bestBetweenness = require("./bestBetweenness");
 const getClickedCoordinates = require("./GetClickedCoordinates");
-
-
+const findNearestPoint = require('./findNearestPoint');
+const initHitTestTree = require("./InitHitTestTree");
+const getPointList = require("./GetPointList");
 // Requirements for graph
 let createGraph = require('ngraph.graph');
 let wgl = require('w-gl');
@@ -40,7 +41,6 @@ let shortestPath = path.aStar(graph, {
         return 1;
     }
 });
-console.log(bestBetweenness(graph));
 let canvas = document.getElementById("betweenness-id");
 scene = wgl.scene(canvas);
 scene.setClearColor(16 / 255, 16 / 255, 16 / 255, 1);
@@ -65,16 +65,23 @@ var allnodes = [];
 graph.forEachNode(function(node) {
     allnodes.push(node.id);
 })
-console.log(shortestPath);
 
 lines.color = { r: 0 / 255, g: 0 / 255, b: 0 / 255, a: 1 }
 scene.appendChild(lines);
-
-
-document.body.addEventListener('mousedown', handleMouseDown, true);
+hetTestTree = null;
+new Promise((resolve, reject) => {
+    allPoint = getPointList(graph);
+    resolve(allPoint);
+}).then((previousResult) => {
+    hetTestTree = initHitTestTree(previousResult);
+    return hetTestTree;
+}).then((previousResult) => {
+    document.body.addEventListener('click', handleMouseDown, true);
+})
 
 
 function handleMouseDown(e) {
     s = getClickedCoordinates(e);
-    console.log(s);
+    find = findNearestPoint(e.clientX, e.clientY, hetTestTree, graph);
+    console.log(find)
 }
