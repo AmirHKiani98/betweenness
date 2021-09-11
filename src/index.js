@@ -43,6 +43,8 @@ let shortestPath = path.aStar(graph, {
         return 1;
     }
 });
+var hetTestTree = null;
+var allnodes = [];
 
 function initialize() {
     let canvas = document.getElementById("betweenness-id");
@@ -67,24 +69,26 @@ function initialize() {
         lines.add({ from, to });
     });
     // Find best betweenness
-    var allnodes = [];
+
+
     graph.forEachNode(function(node) {
-        allnodes.push(node.id);
+        allnodes.push(node);
     })
 
     lines.color = { r: 244 / 255, g: 250 / 255, b: 230 / 255, a: 1 }
     scene.setClearColor(0.2, 0.2, 0.2, 1);
     scene.appendChild(lines);
-    hetTestTree = null;
-    new Promise((resolve, reject) => {
-        allPoint = getPointList(graph);
-        resolve(allPoint);
-    }).then((previousResult) => {
-        hetTestTree = initHitTestTree(previousResult);
-        return hetTestTree;
-    }).then((previousResult) => {
-        document.body.addEventListener('click', handleMouseDown, true);
-    })
+
+    allPoint = getPointList(graph);
+    hetTestTree = initHitTestTree(allPoint);
+    $("#betweenness-id").click(handleMouseDown);
+    // new Promise((resolve, reject) => {
+
+    // }).then((previousResult) => {
+
+    // }).then((previousResult) => {
+
+    // })
 
     $("#find-best-betweenness").click(findBestBetweenness);
 
@@ -118,7 +122,7 @@ function findBestBetweenness(event) {
 
 function handleMouseDown(e) {
     s = getClickedCoordinates(e);
-    // find = findNearestPoint(e.clientX, e.clientY, hetTestTree, graph);
-    // console.log(s)
+    find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
+    console.log(find);
     // makeCircle(6, 1, "my_g", 1, radius = 0.3);
 }
