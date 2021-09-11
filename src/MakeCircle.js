@@ -1,4 +1,4 @@
-function makeCircle(x, y, g_id, circle_id, radius = 0.1, stroke = 0.1) {
+function makeCircle(x, y, g_id, circle_id, radius = 0.1, stroke = 0.1, color = "yellow") {
     g = document.getElementById(g_id);
     var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circle.setAttribute("cx", x);
@@ -6,7 +6,7 @@ function makeCircle(x, y, g_id, circle_id, radius = 0.1, stroke = 0.1) {
     circle.setAttribute("r", radius);
     circle.setAttribute("stroke", "green");
     circle.setAttribute("stroke-width", "" + stroke);
-    circle.setAttribute("fill", "yellow");
+    circle.setAttribute("fill", color);
     circle.setAttribute("id", "circle_" + circle_id);
     g.appendChild(circle);
 }
