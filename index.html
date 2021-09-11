@@ -4,12 +4,74 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/fontawsome/fa.min.css">
+    <!-- <script src="./assets/fontawsome/fa.min.js"></script> -->
+    <script src="./assets/jquery/jquery.min.js"></script>
+    <script src="./assets/bootstrap/bootstrap.min.js"></script>
     <title>Betweenness</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        li {
+            list-style: none;
+        }
+        
+        .svg-overlay.absolute {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: transparent;
+        }
+        
+        .absolute {
+            position: absolute;
+        }
+        
+        #betweenness-id {
+            top: 0;
+            left: 0;
+        }
+        
+        #right-menu {
+            transition-duration: 0.3s;
+        }
+        
+        #right-menu {
+            background-color: rgba(49, 9, 9, 0.39);
+        }
+    </style>
 </head>
 
-<body style="width: 100%;height: 100%;">
-    <canvas id="betweenness-id" style="width: 100%; height: 100%;"></canvas>
+<body style="width: 100%;height: 100%;" class="overflow-hidden">
+    <div class="absolute w-100 float-right" style="z-index: 1000;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light float-right w-100">
+            <a href="#" id="menu-controller">Button</a>
+        </nav>
+        <div class="absolute p-3 d-flex flex-column" id="right-menu" style="z-index: 2000;right: 0; top: 0; width: 300px;height: 100vh;">
+            <div id="graph-details">
+            </div>
+            <div id="plot-graph" class="d-flex flex-column">
+                <a name="" id="reset-graph" class="btn btn-primary m-2" href="#" role="button">Reset Graph</a>
+                <a name="" id="find-best-betweenness" class="btn btn-primary m-2" href="#" role="button">Best Betweenness</a>
+            </div>
+        </div>
+    </div>
+    <canvas id="betweenness-id" class="absolute" style="width: 100%; height: 100%;"></canvas>
+    <svg class="svg-overlay absolute">
+        <g id="my_g" class="scene" transform="matrix(0.053016667703715915, 0, 0, 0.053016667703715915, 854.7798291398587, 350.3270279957702)">
+            <path id="my_path" d="" stroke-width="90.53756503190354px" stroke="red" fill="transparent">
+
+            </path> <!----> <!---->
+        </g>
+    </svg>
     <script src="dist/main.js"></script>
+    <script src="./main.js"></script>
     <!-- <script src="./assets/VivaGraph/vivagraph.min.js"></script> -->
     <!-- <script src="./test.js"></script> -->
 </body>
