@@ -101,10 +101,6 @@ initialize();
 
 function updateSVGElements(svgConntainer) {
     let strokeWidth = 6 / svgConntainer.scale;
-    // console.log(strokeWidth);
-    // document.getElementById("my_path").setAttributeNS(null, 'stroke-width', strokeWidth + 'px');
-    // scale = svgConntainer.scale / scene.getPixelRatio();
-    // updatePathsStrokes();
 }
 
 function updatePathsStrokes() {
@@ -123,6 +119,8 @@ function findBestBetweenness(event) {
 function handleMouseDown(e) {
     s = getClickedCoordinates(e);
     find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
-    console.log(find);
+    if (find) {
+        makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1);
+    }
     // makeCircle(6, 1, "my_g", 1, radius = 0.3);
 }

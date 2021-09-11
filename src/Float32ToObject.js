@@ -1,4 +1,4 @@
-export function toList(float32Array) {
+function toList(float32Array) {
     let i = 0;
     var object = [];
     var from = {};
@@ -28,3 +28,4 @@ export function toList(float32Array) {
     }
     return object;
 }
+module.exports = toList;

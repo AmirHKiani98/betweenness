@@ -11,8 +11,6 @@ function findNearestPoint(x, y, hetTestTree, nodesList, maxDistanceToExplore = 2
     if (points.length > 0) {
         return points[0];
     } else {
-        // keep trying.
-        // return findNearestPoint(x, y, maxDistanceToExplore * 2);
         return null;
     }
 }
