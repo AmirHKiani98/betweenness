@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/fontawsome/fa.min.css">
+
     <!-- <script src="./assets/fontawsome/fa.min.js"></script> -->
     <script src="./assets/jquery/jquery.min.js"></script>
     <script src="./assets/fontawsome/fa.min.js"></script>
-    <script src="./assets/bootstrap/bootstrap.min.js"></script>
     <title>Betweenness</title>
     <style>
         * {
@@ -44,7 +44,7 @@
         }
         
         #right-menu {
-            background-color: rgba(49, 9, 9, 0.39);
+            background-color: rgba(8, 24, 68, 0.39);
         }
     </style>
 </head>
@@ -52,7 +52,7 @@
 <body style="width: 100%;height: 100%;" class="overflow-hidden">
     <div class="absolute w-100 float-right" style="z-index: 1000;">
         <nav class="navbar navbar-expand-lg navbar-light bg-light float-right w-100">
-            <a href="#" id="menu-controller"><i class="fa fa-bars" style="font-size:30px;" aria-hidden="true"></i></a>
+            <a href="#" id="menu-controller" class="m-2"><i class="fa fa-bars" style="font-size:30px;" aria-hidden="true"></i></a>
         </nav>
         <div class="absolute p-3 d-flex flex-column" id="right-menu" style="z-index: 2000;right: 0; top: 0; width: 300px;height: 100vh;">
             <div id="graph-details">
@@ -68,11 +68,33 @@
                     </div>
                     <a name="" id="add-node-button" class="btn btn-primary m-2 w-50" href="#" role="button">add</a>
                 </div>
+                <div id="graph-info" class="d-flex justify-content-between p-2">
+                    <p style="color:#0d6efd" class="m-0 p-0 d-flex align-items-center">Selected node:</p>
+                    <p style="color:#0d6efd; font-size: 25px;" id="selected-node" class="m-0 p-0 d-flex align-items-center">-----</p>
+                </div>
+                <div id="select-node-by-click" class="d-flex justify-content-between p-2">
+                    <div class="pe-2">
+                        <input type="checkbox" class="btn-check" id="actiavate-selecting-btn" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="actiavate-selecting-btn">Activate Selecting Node</label>
+                    </div>
+                    <div class="ps-2">
+                        <input type="checkbox" class="btn-check" id="actiavate-adding-btn" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="actiavate-adding-btn">Activate Adding Node</label>
+                    </div>
+                </div>
+                <div id="select-node-by-click" class="d-flex justify-content-center">
+                    <input type="checkbox" class="btn-check" id="actiavate-remove-circle-btn" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="actiavate-remove-circle-btn">Activate Adding Node</label>
+                </div>
             </div>
             <div id="plot-graph" class="d-flex flex-column">
                 <a name="" id="reset-graph" class="btn btn-primary m-2" href="#" role="button">Reset Graph</a>
                 <a name="" id="find-best-betweenness" class="btn btn-primary m-2" href="#" role="button">Best Betweenness</a>
             </div>
+            <div id="remove-marks" class="d-flex flex-column">
+                <a name="" id="remove-marks-button" class="btn btn-primary m-2" href="#" role="button">Remove All Marks</a>
+            </div>
+
         </div>
     </div>
     <canvas id="betweenness-id" class="absolute" style="width: 100%; height: 100%;"></canvas>
@@ -83,10 +105,10 @@
             </path> <!----> <!---->
         </g>
     </svg>
-    <script src="dist/main.js"></script>
+    <script src="./dist/main.js"></script>
     <script src="./main.js"></script>
-    <!-- <script src="./assets/VivaGraph/vivagraph.min.js"></script> -->
-    <!-- <script src="./test.js"></script> -->
+    <script src="./assets/bootstrap/bootstrap.min.js"></script>
+
 </body>
 
 </html>

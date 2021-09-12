@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/assets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/assets/fontawsome/fa.min.css">
-    <!-- <script src="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/assets/fontawsome/fa.min.js"></script> -->
-    <script src="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/assets/jquery/jquery.min.js"></script>
-    <script src="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/assets/fontawsome/fa.min.js"></script>
-    <script src="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/assets/bootstrap/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/fontawsome/fa.min.css">
+    <!-- <script src="./assets/fontawsome/fa.min.js"></script> -->
+    <script src="./assets/jquery/jquery.min.js"></script>
+    <script src="./assets/fontawsome/fa.min.js"></script>
+    <script src="./assets/bootstrap/bootstrap.min.js"></script>
     <title>Betweenness</title>
     <style>
         * {
@@ -72,11 +72,23 @@
                     <p style="color:#ec8f6a" class="m-0 p-0 d-flex align-items-center">Selected node:</p>
                     <p style="color:#ec8f6a; font-size: 25px;" id="selected-node" class="m-0 p-0 d-flex align-items-center">-----</p>
                 </div>
+                <div id="select-node-by-click" class="d-flex justify-content-between p-2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" name="" id="" value="checkedValue" checked>
+                        Display value
+                      </label>
+                    </div>
+                </div>
             </div>
             <div id="plot-graph" class="d-flex flex-column">
                 <a name="" id="reset-graph" class="btn btn-primary m-2" href="#" role="button">Reset Graph</a>
                 <a name="" id="find-best-betweenness" class="btn btn-primary m-2" href="#" role="button">Best Betweenness</a>
             </div>
+            <div id="remove-marks" class="d-flex flex-column">
+                <a name="" id="remove-marks-button" class="btn btn-primary m-2" href="#" role="button">Remove All Marks</a>
+            </div>
+
         </div>
     </div>
     <canvas id="betweenness-id" class="absolute" style="width: 100%; height: 100%;"></canvas>
@@ -87,10 +99,8 @@
             </path> <!----> <!---->
         </g>
     </svg>
-    <script src="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/dist/main.js"></script>
-    <script src="https://raw.githubusercontent.com/AmirHKiani98/betweenness/main/main.js"></script>
-    <!-- <script src="./assets/VivaGraph/vivagraph.min.js"></script> -->
-    <!-- <script src="./test.js"></script> -->
+    <script src="./dist/main.js"></script>
+    <script src="./main.js"></script>
 </body>
 
 </html>

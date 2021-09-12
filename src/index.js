@@ -14,8 +14,7 @@ let wgl = require('w-gl');
 let graph = createGraph();
 let path = require('ngraph.path');
 
-
-
+$("#remove-marks-button").click(removeAllCircles);
 
 graph.addNode("b", { x: 0, y: 0 });
 graph.addNode("a", { x: 3, y: -4 });
@@ -43,8 +42,11 @@ let shortestPath = path.aStar(graph, {
         return 1;
     }
 });
+var toSelect = false;
 var hetTestTree = null;
 var allnodes = [];
+var lines = null;
+var scene = null;
 
 function initialize() {
     let canvas = document.getElementById("betweenness-id");
@@ -62,7 +64,7 @@ function initialize() {
     scene.setPixelRatio(2);
     svgConntainerWays = new SVGContainer(document.getElementsByTagName("svg")[0].querySelector('.scene'), updateSVGElements);
     scene.appendChild(svgConntainerWays);
-    var lines = new wgl.WireCollection(graph.getLinksCount());
+    lines = new wgl.WireCollection(graph.getLinksCount());
     graph.forEachLink(function(link) {
         let from = graph.getNode(link.fromId).data;
         let to = graph.getNode(link.toId).data;
@@ -103,24 +105,53 @@ function updatePathsStrokes() {
 }
 
 function findBestBetweenness(event) {
-    console.log(bestBetweenness(graph));
+    var results = bestBetweenness(graph);
+    var x = null;
+    var y = null;
+    var nodeBetweenness = null;
+    var foundMax = Number.NEGATIVE_INFINITY;
+    for (nodeId in results) {
+        if (results[nodeId].found > foundMax) {
+            nodeBetweenness = nodeId;
+            x = results[nodeId].x;
+            y = results[nodeId].y;
+            foundMax = results[nodeId].found;
+        }
+    }
+    makeCircle(x, y, "my_g", nodeBetweenness, radius = 0.3, stroke = 0.1, color = "black");
+
 }
 
 function handleMouseDown(e) {
-    s = getClickedCoordinates(e);
-    find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
-    if (find) {
-
-        makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1);
-    }
-    // makeCircle(6, 1, "my_g", 1, radius = 0.3);
+    handleCircle(e);
 }
 
-function handleCircle() {
+function handleCircle(event) {
+    if ($("#actiavate-selecting-btn").prop("checked")) {
+        toSelect = true;
+    }
 
+    if (toSelect) {
+        s = getClickedCoordinates(event, scene);
+        find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
+        if (find) {
+            makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1);
+        }
+        $("#actiavate-selecting-btn").prop("checked", false);
+        $("#selected-node").text(find.id);
+        toSelect = false;
+    } else {
+
+    }
+}
+
+function removeAllCircles() {
+    $(".circle").remove();
 }
 
 function resetGraph() {
+    console.log(scene);
+    console.log(lines);
     scene.removeChild(lines);
     graph.clear();
 }

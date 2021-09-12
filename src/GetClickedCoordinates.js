@@ -1,4 +1,4 @@
-function getClickedCoordinates(e) {
+function getClickedCoordinates(e, scene) {
     var s;
     var touchId = undefined;
 
