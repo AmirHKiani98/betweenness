@@ -82,20 +82,10 @@ function initialize() {
     allPoint = getPointList(graph);
     hetTestTree = initHitTestTree(allPoint);
     $("#betweenness-id").click(handleMouseDown);
-    // new Promise((resolve, reject) => {
-
-    // }).then((previousResult) => {
-
-    // }).then((previousResult) => {
-
-    // })
 
     $("#find-best-betweenness").click(findBestBetweenness);
 
-    $("#reset-graph").click(function() {
-        scene.removeChild(lines);
-        graph.clear();
-    })
+    $("#reset-graph").click(resetGraph)
 }
 initialize();
 
@@ -120,7 +110,17 @@ function handleMouseDown(e) {
     s = getClickedCoordinates(e);
     find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
     if (find) {
+
         makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1);
     }
     // makeCircle(6, 1, "my_g", 1, radius = 0.3);
+}
+
+function handleCircle() {
+
+}
+
+function resetGraph() {
+    scene.removeChild(lines);
+    graph.clear();
 }
