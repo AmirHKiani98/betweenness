@@ -1,4 +1,4 @@
-$("#menu-controller").click(function(event) {
+$("#menu-controller, #close-right-pad").click(function(event) {
     $("#right-menu").css("right")
     switch ($("#right-menu").css("right")) {
         case "0px":

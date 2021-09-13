@@ -7,7 +7,7 @@ const initHitTestTree = require("./InitHitTestTree");
 const getPointList = require("./GetPointList");
 const SVGContainer = require("./SVGContainer");
 const makeCircle = require("./MakeCircle");
-
+const findDistance2D = require("./FindDistance2D");
 // Requirements for graph
 let createGraph = require('ngraph.graph');
 let wgl = require('w-gl');
@@ -42,11 +42,22 @@ let shortestPath = path.aStar(graph, {
         return 1;
     }
 });
+
+
+function euclideanDistance(nodeId1, nodeId2, graph) {
+    var node1 = graph.getNode(nodeId1);
+    var node2 = graph.getNode(nodeId2);
+    return Math.sqrt(((node1.data.x - node2.data.x) ** 2) + ((node1.data.y - node2.data.y) ** 2));
+}
+
 var toSelect = false;
 var hetTestTree = null;
 var allnodes = [];
 var lines = null;
 var scene = null;
+var betweenness = null;
+
+var selectedNode = null;
 
 function initialize() {
     let canvas = document.getElementById("betweenness-id");
@@ -106,6 +117,7 @@ function updatePathsStrokes() {
 
 function findBestBetweenness(event) {
     var results = bestBetweenness(graph);
+    betweenness = results;
     var x = null;
     var y = null;
     var nodeBetweenness = null;
@@ -118,6 +130,16 @@ function findBestBetweenness(event) {
             foundMax = results[nodeId].found;
         }
     }
+    $("#selected-node").text(nodeBetweenness);
+    if (betweenness == null) {
+        betweenness = bestBetweenness(graph);
+    }
+    let nodeBetweennessGraph = graph.getNode(nodeBetweenness);
+    let nodeBetweennessFound = betweenness[nodeBetweennessGraph.id].found;
+    $("#selected-node-betweenness").text(nodeBetweennessFound);
+    $("#selected-node-straightness-ceterality").text()
+    let nodeCenterality = graph.getNode(nodeBetweennessGraph.id).links.length;
+    $("#selected-node-ceterality").text(nodeCenterality)
     makeCircle(x, y, "my_g", nodeBetweenness, radius = 0.3, stroke = 0.1, color = "black");
 
 }
@@ -135,11 +157,20 @@ function handleCircle(event) {
         s = getClickedCoordinates(event, scene);
         find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
         if (find) {
-            makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1);
+            $(".selected-circle").remove();
+            makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1, "yellow", "selected-circle");
+            selectedNode = find;
+            $("#actiavate-selecting-btn").prop("checked", false);
+            $("#selected-node").text(find.id);
+            if (betweenness == null) {
+                betweenness = bestBetweenness(graph);
+            }
+            let nodeBetweenness = betweenness[find.id].found;
+            $("#selected-node-betweenness").text(nodeBetweenness);
+            let nodeCenterality = graph.getNode(find.id).links.length;
+            $("#selected-node-ceterality").text(nodeCenterality)
+            toSelect = false;
         }
-        $("#actiavate-selecting-btn").prop("checked", false);
-        $("#selected-node").text(find.id);
-        toSelect = false;
     } else {
 
     }
@@ -150,8 +181,7 @@ function removeAllCircles() {
 }
 
 function resetGraph() {
-    console.log(scene);
-    console.log(lines);
+    console.log($("circle"));
     scene.removeChild(lines);
     graph.clear();
 }

@@ -1,5 +1,6 @@
 const shortestPathArray = require("../src/ShortestPathArray.js");
 const bestBetweenness = require("../src/bestBetweenness");
+const findDistance2D = require("../src/FindDistance2D");
 let createGraph = require('ngraph.graph');
 let graph = createGraph();
 let path = require('ngraph.path');
@@ -18,7 +19,7 @@ graph.forEachNode(function(node) {
     myList.push(data.x, data.y)
 })
 
-console.log(new Int32Array(myList))
+// console.log(new Int32Array(myList))
 graph.addLink("a", "b");
 graph.addLink("b", "d");
 graph.addLink("b", "c");
@@ -30,3 +31,4 @@ graph.addLink("f", "i");
 graph.addLink("g", "i");
 graph.addLink("i", "h");
 graph.addLink("g", "h");
+console.log(findDistance2D("a", "h", graph));
