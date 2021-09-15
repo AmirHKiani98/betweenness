@@ -51,6 +51,8 @@ function euclideanDistance(nodeId1, nodeId2, graph) {
 }
 
 var toSelect = false;
+var toAdd = false;
+
 var hetTestTree = null;
 var allnodes = [];
 var lines = null;
@@ -58,9 +60,11 @@ var scene = null;
 var betweenness = null;
 
 var selectedNode = null;
+var toAddNode = null;
+
 
 function initialize() {
-    let canvas = document.getElementById("betweenness-id");
+    let canvas = document.getElementById("canvas-id");
     scene = wgl.scene(canvas);
     scene.setClearColor(16 / 255, 16 / 255, 16 / 255, 1);
     scene.setClearColor(1, 1, 1, 1)
@@ -81,8 +85,7 @@ function initialize() {
         let to = graph.getNode(link.toId).data;
         lines.add({ from, to });
     });
-    // Find best betweenness
-
+    modifyLinkSelect()
 
     graph.forEachNode(function(node) {
         allnodes.push(node);
@@ -94,11 +97,14 @@ function initialize() {
 
     allPoint = getPointList(graph);
     hetTestTree = initHitTestTree(allPoint);
-    $("#betweenness-id").click(handleMouseDown);
 
+    // Events
+    $("#canvas-id").click(handleMouseDown);
+    document.getElementById("canvas-id").addEventListener("touchmove", handleMouseDown);
     $("#find-best-betweenness").click(findBestBetweenness);
-
-    $("#reset-graph").click(resetGraph)
+    $("#reset-graph").click(resetGraph);
+    $("#add-node-button").click(addNodeFunction)
+    $("#add-link-button").click(addLink);
 }
 initialize();
 
@@ -142,6 +148,7 @@ function findBestBetweenness(event) {
     $("#selected-node-ceterality").text(nodeCenterality)
     makeCircle(x, y, "my_g", nodeBetweenness, radius = 0.3, stroke = 0.1, color = "black");
 
+
 }
 
 function handleMouseDown(e) {
@@ -152,15 +159,16 @@ function handleCircle(event) {
     if ($("#actiavate-selecting-btn").prop("checked")) {
         toSelect = true;
     }
-
+    if ($("#actiavate-adding-btn").prop("checked")) {
+        toAdd = true;
+    }
+    let s = getClickedCoordinates(event, scene);
     if (toSelect) {
-        s = getClickedCoordinates(event, scene);
         find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
         if (find) {
             $(".selected-circle").remove();
             makeCircle(find.data.x, find.data.y, "my_g", "1", 0.3, 0.1, "yellow", "selected-circle");
             selectedNode = find;
-            $("#actiavate-selecting-btn").prop("checked", false);
             $("#selected-node").text(find.id);
             if (betweenness == null) {
                 betweenness = bestBetweenness(graph);
@@ -168,12 +176,16 @@ function handleCircle(event) {
             let nodeBetweenness = betweenness[find.id].found;
             $("#selected-node-betweenness").text(nodeBetweenness);
             let nodeCenterality = graph.getNode(find.id).links.length;
-            $("#selected-node-ceterality").text(nodeCenterality)
-            toSelect = false;
+            $("#selected-node-ceterality").text(nodeCenterality);
+            // $("#actiavate-selecting-btn").prop("checked", false);
+            // toSelect = false;
         }
-    } else {
-
+    } else if (toAdd) {
+        $(".added-circle").remove();
+        makeCircle(s.x, s.y, "my_g", "1", 0.3, 0.1, "white", "added-circle");
+        toAddNode = s;
     }
+
 }
 
 function removeAllCircles() {
@@ -181,7 +193,80 @@ function removeAllCircles() {
 }
 
 function resetGraph() {
-    console.log($("circle"));
     scene.removeChild(lines);
     graph.clear();
+}
+console.log(graph);
+
+function addNodeFunction(event) {
+    let addNodeName = $("#add-node-input").val();
+    if (typeof graph.getNode(addNodeName) == "undefined") {
+        if (toAddNode == null) {
+            $("#notif-modalText").text("No node has selected on the canvas");
+            $("#notif-modalLabel").html("<span style='color:red'>error</span>");
+            $("#notif-modal").modal("show");
+        } else {
+            graph.addNode(addNodeName, { x: toAddNode.x, y: toAddNode.y });
+            makeCircle(toAddNode.x, toAddNode.y, "my_g", "1", 0.3, 0.1, "#762938", "graph-added-circle");
+            toAddNode = null;
+            $(".added-circle").remove();
+            modifyLinkSelect();
+        }
+    } else {
+        $("#notif-modalText").text("The input name has existed in the graph")
+        $("#notif-modalLabel").html("<span style='color:red'>error</span>");
+        $("#notif-modal").modal("show");
+    }
+}
+
+function addLink() {
+    let from = $("#from-selection").val();
+    let to = $("#to-selection").val();
+    let fromNode = graph.getNode(from);
+    let toNode = graph.getNode(to);
+    if ((typeof fromNode !== "undefined") && (typeof toNode !== "undefined")) {
+        let prevLinks = fromNode.links;
+        let found = false;
+        if (prevLinks !== null) {
+            for (let index = 0; index < prevLinks.length; index++) {
+                const element = prevLinks[index];
+                if (element.fromId == to || element.toId == to) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            graph.addLink(from, to);
+            reloadGraph();
+        } else {
+            $("#notif-modalText").text("The link has already existed");
+            $("#notif-modalLabel").html("<span style='color:red'>error</span>");
+            $("#notif-modal").modal("show");
+        }
+    } else {
+        $("#notif-modalText").text("There is no such nodes");
+        $("#notif-modalLabel").html("<span style='color:red'>error</span>");
+        $("#notif-modal").modal("show");
+    }
+}
+
+function modifyLinkSelect() {
+    $("#to-selection,#from-selection").empty();
+    $("#to-selection").append("<option selected disabled>To</option>");
+    $("#from-selection").append("<option selected disabled>From</option>");
+    graph.forEachNode((node) => {
+        $("#to-selection,#from-selection").append(`<option>${node.id}</option>`);
+    })
+}
+
+function reloadGraph() {
+    scene.removeChild(lines);
+    lines = new wgl.WireCollection(graph.getLinksCount());
+    graph.forEachLink(function(link) {
+        let from = graph.getNode(link.fromId).data;
+        let to = graph.getNode(link.toId).data;
+        lines.add({ from, to });
+    });
+    scene.appendChild(lines);
 }

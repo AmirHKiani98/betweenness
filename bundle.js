@@ -5204,7 +5204,7 @@
         var allnodes = [];
 
         function initialize() {
-            let canvas = document.getElementById("betweenness-id");
+            let canvas = document.getElementById("canvas-id");
             scene = wgl.scene(canvas);
             scene.setClearColor(16 / 255, 16 / 255, 16 / 255, 1);
             scene.setClearColor(1, 1, 1, 1)
@@ -5238,7 +5238,7 @@
 
             allPoint = getPointList(graph);
             hetTestTree = initHitTestTree(allPoint);
-            $("#betweenness-id").click(handleMouseDown);
+            $("#canvas-id").click(handleMouseDown);
             // new Promise((resolve, reject) => {
 
             // }).then((previousResult) => {

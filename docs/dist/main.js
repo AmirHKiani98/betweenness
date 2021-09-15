@@ -1452,12 +1452,12 @@
         }
 
         function E() { console.log($("circle")), g.removeChild(v), l.clear() }! function() {
-            let e = document.getElementById("betweenness-id");
+            let e = document.getElementById("canvas-id");
             (g = f.scene(e)).setClearColor(16 / 255, 16 / 255, 16 / 255, 1), g.setClearColor(1, 1, 1, 1), g.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 }), g.setPixelRatio(2), svgConntainerWays = new a(document.getElementsByTagName("svg")[0].querySelector(".scene"), w), g.appendChild(svgConntainerWays), v = new f.WireCollection(l.getLinksCount()), l.forEachLink((function(e) {
                 let t = l.getNode(e.fromId).data,
                     n = l.getNode(e.toId).data;
                 v.add({ from: t, to: n })
-            })), l.forEachNode((function(e) { m.push(e) })), v.color = { r: 244 / 255, g: 250 / 255, b: 230 / 255, a: 1 }, g.setClearColor(.2, .2, .2, 1), g.appendChild(v), allPoint = i(l), p = o(allPoint), $("#betweenness-id").click(x), $("#find-best-betweenness").click(b), $("#reset-graph").click(E)
+            })), l.forEachNode((function(e) { m.push(e) })), v.color = { r: 244 / 255, g: 250 / 255, b: 230 / 255, a: 1 }, g.setClearColor(.2, .2, .2, 1), g.appendChild(v), allPoint = i(l), p = o(allPoint), $("#canvas-id").click(x), $("#find-best-betweenness").click(b), $("#reset-graph").click(E)
         }()
     })()
 })();
