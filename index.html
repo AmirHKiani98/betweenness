@@ -55,6 +55,18 @@
             text-align: center!important;
         }
         
+        .custom-input-file {
+            position: relative;
+        }
+        
+        .custom-input-file>input {
+            /* visibility: hidden; */
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
         @media screen and (max-width: 480px) {
             #right-menu {
                 width: 100%!important;
@@ -117,20 +129,30 @@
                         <p style="color:#0d6efd" class="m-0 p-0 d-flex align-items-center">Straightness Centerality:</p>
                         <p style="color:#0d6efd; font-size: 25px;" id="selected-node-straightness-ceterality" class="m-0 p-0 d-flex align-items-center">-----</p>
                     </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between w-50 me-1">
+                            <p style="color:#0d6efd; font-size: 24px;" class="m-0 p-0 d-flex align-items-center">X</p>
+                            <p style="color:#0d6efd; font-size: 20px;" id="selected-node-x" class="m-0 p-0 d-flex align-items-center">-----</p>
+                        </div>
+                        <div class="d-flex justify-content-between w-50">
+                            <p style="color:#0d6efd; font-size: 24px;" class="m-0 p-0 d-flex align-items-center">Y</p>
+                            <p style="color:#0d6efd; font-size: 20px;" id="selected-node-y" class="m-0 p-0 d-flex align-items-center">-----</p>
+                        </div>
+                    </div>
                 </div>
                 <div id="select-node-by-click" class="d-flex justify-content-between p-2">
                     <div class="pe-2">
                         <input type="checkbox" class="btn-check" id="actiavate-selecting-btn" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="actiavate-selecting-btn">Activate Selecting Node</label>
+                        <label class="btn btn-outline-primary" for="actiavate-selecting-btn" style="font-size: 10px;">Activate Selecting Node</label>
                     </div>
-                    <div class="ps-2">
+                    <div class="pe-2">
                         <input type="checkbox" class="btn-check" id="actiavate-adding-btn" autocomplete="off">
-                        <label class="btn btn-outline-primary" for="actiavate-adding-btn">Activate Adding Node</label>
+                        <label class="btn btn-outline-primary" for="actiavate-adding-btn" style="font-size: 10px;">Activate Adding Node</label>
                     </div>
-                </div>
-                <div id="select-node-by-click" class="d-flex justify-content-center">
-                    <input type="checkbox" class="btn-check" id="actiavate-remove-circle-btn" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="actiavate-remove-circle-btn">Activate Adding Node</label>
+                    <div id="select-node-by-click" class="d-flex justify-content-center">
+                        <input type="checkbox" class="btn-check" id="actiavate-remove-circle-btn" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="actiavate-remove-circle-btn" style="font-size: 10px;">Activate Adding Node</label>
+                    </div>
                 </div>
             </div>
             <div id="plot-graph" class="d-flex flex-column">
@@ -143,13 +165,26 @@
             <div id="remove-marks" class="d-flex justify-content-center">
                 <a name="" id="close-right-pad" class="btn btn-primary" href="#" role="button"><i class="fa fa-window-close" style="font-size:20px;" aria-hidden="true"></i></a>
             </div>
-            <div id="graph-links" class="d-flex flex-row justify-content-between">
-                <a name="" id="add-link-button" class="btn btn-primary m-1" href="#" role="button">Add Link</a>
-                <select class="form-select form-select-sm w-50 m-1" id="from-selection" aria-label=".form-select-sm example">
+            <div id="graph-links" class="d-flex flex-row justify-content-between m-2">
+                <a name="" id="add-link-button" class="btn btn-primary me-1" href="#" role="button">Add Link</a>
+                <select class="form-select form-select-sm w-50 me-1" id="from-selection" aria-label=".form-select-sm example">
                 </select>
-                <select class="form-select form-select-sm w-50 m-1" id="to-selection" aria-label=".form-select-sm example">
+                <select class="form-select form-select-sm w-50" id="to-selection" aria-label=".form-select-sm example">
                 </select>
-
+            </div>
+            <div id="save-load-graph" class="d-flex flex-row justify-content-between p-2">
+                <div class="custom-input-file w-75 d-flex flex-row">
+                    <input id="upload-graph-input" name="upload" type="file" class="file" data-browse-on-zone-click="true">
+                    <a name="upload" id="upload-graph-button" class="btn btn-primary" href="#" role="button"><i class="fa fa-upload" style="font-size: 25px;" aria-hidden="true"></i></a>
+                    <div class="form-group w-50 ms-2">
+                        <label for=""></label>
+                        <input type="text" class="form-control" name="" id="" aria-describedby="helpId" style="font-size: 12px;" placeholder="Name">
+                    </div>
+                </div>
+                <div class="custom-input-file w-25 d-flex flex-row-reverse">
+                    <input id="download-graph-input" name="download" type="file" class="file" data-browse-on-zone-click="true">
+                    <a name="download" id="download-graph-button" class="btn btn-primary" href="#" role="button"><i class="fa fa-download" style="font-size: 25px;" aria-hidden="true"></i></a>
+                </div>
             </div>
         </div>
     </div>

@@ -164,6 +164,7 @@ function handleCircle(event) {
     }
     let s = getClickedCoordinates(event, scene);
     if (toSelect) {
+        updateXY(s.x, s.y);
         find = findNearestPoint(s.x, s.y, hetTestTree, allnodes, maxDistanceToExplore = 1);
         if (find) {
             $(".selected-circle").remove();
@@ -181,6 +182,7 @@ function handleCircle(event) {
             // toSelect = false;
         }
     } else if (toAdd) {
+        updateXY(s.x, s.y);
         $(".added-circle").remove();
         makeCircle(s.x, s.y, "my_g", "1", 0.3, 0.1, "white", "added-circle");
         toAddNode = s;
@@ -269,4 +271,11 @@ function reloadGraph() {
         lines.add({ from, to });
     });
     scene.appendChild(lines);
+}
+
+function updateXY(x, y) {
+    x = Math.round(x * 100) / 100;
+    y = Math.round(y * 100) / 100;
+    $("#selected-node-x").text(x);
+    $("#selected-node-y").text(y);
 }
