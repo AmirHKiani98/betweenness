@@ -26,29 +26,7 @@ function activatorsFunction(event) {
 
 $("#upload-graph-button").click((event) => {
     $("#upload-graph-input").trigger("click");
-})
-$("#download-graph-button").click((event) => {
-    $("#download-graph-input").trigger("click");
-})
-
-$("#download-graph-input").change((event) => {
-    var form = new FormData();
-    var imageData = document.getElementById('download-graph-input').files[0]; //get the file 
-    if (imageData) { //Check the file is emty or not
-        form.append('download-graph-input', imageData); //append files
-    }
-    $.ajax({
-        type: 'POST',
-        processData: false,
-        contentType: false,
-        data: form,
-        url: "/src/handleGraphFiles.php", //My reference URL
-        dataType: 'json',
-        success: function(jsonData) {
-            console.log(jsonData);
-        },
-        error: function(data) {
-            console.log(data);
-        }
-    });
-})
+});
+// $("#download-graph-button").click((event) => {
+//     $("#download-graph-input").trigger("click");
+// })

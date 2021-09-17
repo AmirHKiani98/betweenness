@@ -174,16 +174,14 @@
             </div>
             <div id="save-load-graph" class="d-flex flex-row justify-content-between p-2">
                 <div class="custom-input-file w-75 d-flex flex-row">
-                    <input id="upload-graph-input" name="upload" type="file" class="file" data-browse-on-zone-click="true">
-                    <a name="upload" id="upload-graph-button" class="btn btn-primary" href="#" role="button"><i class="fa fa-upload" style="font-size: 25px;" aria-hidden="true"></i></a>
+                    <a name="download" id="download-graph-button" class="btn btn-primary" href="#" role="button"><i class="fa fa-download" style="font-size: 25px;" aria-hidden="true"></i></a>
                     <div class="form-group w-50 ms-2">
-                        <label for=""></label>
-                        <input type="text" class="form-control" name="" id="" aria-describedby="helpId" style="font-size: 12px;" placeholder="Name">
+                        <input type="text" class="form-control" name="" id="graph-name-input" aria-describedby="helpId" style="font-size: 12px;" placeholder="Name">
                     </div>
                 </div>
                 <div class="custom-input-file w-25 d-flex flex-row-reverse">
-                    <input id="download-graph-input" name="download" type="file" class="file" data-browse-on-zone-click="true">
-                    <a name="download" id="download-graph-button" class="btn btn-primary" href="#" role="button"><i class="fa fa-download" style="font-size: 25px;" aria-hidden="true"></i></a>
+                    <input id="upload-graph-input" name="upload" type="file" class="file" data-browse-on-zone-click="true" webkitdirectory directory multiple>
+                    <a name="upload" id="upload-graph-button" class="btn btn-primary" href="#" role="button"><i class="fa fa-upload" style="font-size: 25px;" aria-hidden="true"></i></a>
                 </div>
             </div>
         </div>
