@@ -334,7 +334,10 @@ function saveNodes(fileName, graph, nodeIdMap) {
         data: { data: toSave, type: "nodes", file_name: fileName },
         dataType: "json",
         success: function(response) {
-            console.log(response.status);
+            $("#notif-modalLabel").empty();
+            $("#notif-modalLabel").append("Results");
+            $("#notif-modalText").empty();
+            $("#notif-modalText").append(response.message);
         },
         error: function(error) {
             console.log(error.responseText);
@@ -366,7 +369,8 @@ function saveLinks(fileName, graph, nodeIdMap) {
         data: { data: toSave, type: "links", file_name: fileName },
         dataType: "json",
         success: function(response) {
-            console.log(response);
+            $("#notif-modalText").append("<br>" + response.message);
+            $("#notif-modal").modal("show");
         },
         error: function(error) {
             console.log(error.responseText);

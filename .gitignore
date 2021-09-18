@@ -4,3 +4,4 @@ node_modules
 !node_modules/ngraph.path
 !node_modules/ngraph.graph
 !node_modules/yaqt
+graphs
