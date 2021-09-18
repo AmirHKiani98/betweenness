@@ -199,7 +199,6 @@ function resetGraph() {
     scene.removeChild(lines);
     graph.clear();
 }
-console.log(graph);
 
 function addNodeFunction(event) {
     let addNodeName = $("#add-node-input").val();
@@ -287,7 +286,6 @@ function updateXY(x, y) {
 $("#upload-graph-input").change((event) => {
     var form = new FormData();
     var imageData = document.getElementById('upload-graph-input').files[0]; //get the file 
-    console.log(imageData);
     if (imageData) { //Check the file is emty or not
         form.append('upload-graph-input', imageData); //append files
     }
@@ -300,9 +298,9 @@ $("#upload-graph-input").change((event) => {
         data: form,
         success: function(response) {
             let graphName = $("#graph-name-input").val();
-            let nodeIdMap = new Map();
-            saveNodes("/src/" + graphName + ".co.bin", graph, nodeIdMap);
-            saveLinks("/src/" + graphName + ".gr.bin", graph, nodeIdMap);
+            // let nodeIdMap = new Map();
+            // saveNodes("/src/" + graphName + ".co.bin", graph, nodeIdMap);
+            // saveLinks("/src/" + graphName + ".gr.bin", graph, nodeIdMap);
         },
         error: function(error) {
             console.log(error);
@@ -312,54 +310,66 @@ $("#upload-graph-input").change((event) => {
 $("#download-graph-button").click((event) => {
     let graphName = $("#graph-name-input").val();
     let nodeIdMap = new Map();
-    saveNodes("/src/" + graphName + ".co.bin", graph, nodeIdMap);
-    saveLinks("/src/" + graphName + ".gr.bin", graph, nodeIdMap);
+    saveNodes(graphName, graph, nodeIdMap);
+    saveLinks(graphName, graph, nodeIdMap);
 })
 
 function saveNodes(fileName, graph, nodeIdMap) {
     var nodeCount = graph.getNodesCount();
     var buf = buffer.alloc(nodeCount * 4 * 2);
     var idx = 0;
+    let toSave = "";
     graph.forEachNode(p => {
         nodeIdMap.set(p.id, 1 + idx / 8);
-        buf.writeInt32LE(p.data.x, idx);
-        idx += 4;
-        buf.writeInt32LE(p.data.y, idx);
-        idx += 4;
+        // buf.writeInt32LE(p.data.x, idx);
+        // idx += 4;
+        // buf.writeInt32LE(p.data.y, idx);
+        // idx += 4;
+        toSave += p.data.x + " " + p.data.y + "\n";
     });
-    console.log(buf);
+    toSave = toSave.trim();
     $.ajax({
         type: "POST",
         url: "/src/SaveGraph.php",
-        data: { data: buf, type: "node", file_name: fileName },
+        data: { data: toSave, type: "nodes", file_name: fileName },
         dataType: "json",
         success: function(response) {
-            console.log(response);
+            console.log(response.status);
         },
         error: function(error) {
-            console.log(error);
+            console.log(error.responseText);
         }
     });
-    console.log('ne');
+    // console.log('ne');
 }
 
 function saveLinks(fileName, graph, nodeIdMap) {
     var buf = buffer.alloc(graph.getLinksCount() * 4 * 2);
 
     var idx = 0;
+    let toSave = "";
     graph.forEachLink(l => {
-        let fromId = nodeIdMap.get(l.fromId);
-        let toId = nodeIdMap.get(l.toId);
-        if (!fromId || !toId) throw new Error('missing id')
+        // let fromId = nodeIdMap.get(l.fromId);
+        // let toId = nodeIdMap.get(l.toId);
+        // if (!fromId || !toId) throw new Error('missing id')
 
-        buf.writeInt32LE(fromId, idx);
-        idx += 4;
-        buf.writeInt32LE(toId, idx);
-        idx += 4;
+        // buf.writeInt32LE(fromId, idx);
+        // idx += 4;
+        // buf.writeInt32LE(toId, idx);
+        // idx += 4;
+        toSave += l.fromId + " " + l.toId + "\n";
     })
-    try {
-        fs.writeFileSync(fileName, buf);
-    } catch (err) {
-        console.log(err);
-    }
+    toSave = toSave.trim();
+    $.ajax({
+        type: "POST",
+        url: "/src/SaveGraph.php",
+        data: { data: toSave, type: "links", file_name: fileName },
+        dataType: "json",
+        success: function(response) {
+            console.log(response);
+        },
+        error: function(error) {
+            console.log(error.responseText);
+        }
+    });
 }

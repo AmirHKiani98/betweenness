@@ -30,3 +30,6 @@ $("#upload-graph-button").click((event) => {
 // $("#download-graph-button").click((event) => {
 //     $("#download-graph-input").trigger("click");
 // })
+$("#upload-graph-button").click(function(evnet) {
+
+})
