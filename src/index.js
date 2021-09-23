@@ -8,12 +8,15 @@ const getPointList = require("./GetPointList");
 const SVGContainer = require("./SVGContainer");
 const makeCircle = require("./MakeCircle");
 const findDistance2D = require("./FindDistance2D");
+
 // Requirements for graph
 let createGraph = require('ngraph.graph');
 let wgl = require('w-gl');
 let graph = createGraph();
 let path = require('ngraph.path');
 let buffer = require("buffer/").Buffer
+let loadGraph = require("../graphs_scripts/LoadGraph");
+
 
 $("#remove-marks-button").click(removeAllCircles);
 
@@ -21,7 +24,7 @@ graph.addNode("b", { x: 0, y: 0 });
 graph.addNode("a", { x: 3, y: -4 });
 graph.addNode("c", { x: 3, y: 4 });
 graph.addNode("d", { x: 4, y: 2 });
-graph.addNode("e", { x: 6, y: 1 });
+graph.addNode("e", { x: 5, y: 1 });
 graph.addNode("f", { x: 8, y: 5 });
 graph.addNode("g", { x: 10, y: 4 });
 graph.addNode("i", { x: 10, y: 8 });
@@ -280,7 +283,17 @@ function updateXY(x, y) {
     $("#selected-node-y").text(y);
 }
 
-
+newGraph = loadGraph("./graphs/New");
+newGraph.then((loaded) => {
+    setTimeout(() => {
+        // graph = loaded.graph;
+        graph.forEachNode((node) => {
+            console.log(node);
+        });
+        // reloadGraph();
+    }, 1500)
+    console.log(loaded.graph);
+})
 
 //-------------------------- Events --------------
 $("#upload-graph-input").change((event) => {
@@ -318,16 +331,19 @@ function saveNodes(fileName, graph, nodeIdMap) {
     var nodeCount = graph.getNodesCount();
     var buf = buffer.alloc(nodeCount * 4 * 2);
     var idx = 0;
-    let toSave = "";
+    // let toSave = "";
+    let toSave = [];
     graph.forEachNode(p => {
         nodeIdMap.set(p.id, 1 + idx / 8);
         // buf.writeInt32LE(p.data.x, idx);
         // idx += 4;
         // buf.writeInt32LE(p.data.y, idx);
         // idx += 4;
-        toSave += p.data.x + " " + p.data.y + "\n";
+        // toSave += p.data.x + " " + p.data.y + "\n";
+        let temp = { x: p.data.x, y: p.data.y, id: p.id };
+        toSave.push(temp);
     });
-    toSave = toSave.trim();
+    // toSave = toSave.trim();
     $.ajax({
         type: "POST",
         url: "/src/SaveGraph.php",
@@ -350,19 +366,22 @@ function saveLinks(fileName, graph, nodeIdMap) {
     var buf = buffer.alloc(graph.getLinksCount() * 4 * 2);
 
     var idx = 0;
-    let toSave = "";
+    // let toSave = "";
+    let toSave = [];
     graph.forEachLink(l => {
-        // let fromId = nodeIdMap.get(l.fromId);
-        // let toId = nodeIdMap.get(l.toId);
-        // if (!fromId || !toId) throw new Error('missing id')
+            // let fromId = nodeIdMap.get(l.fromId);
+            // let toId = nodeIdMap.get(l.toId);
+            // if (!fromId || !toId) throw new Error('missing id')
 
-        // buf.writeInt32LE(fromId, idx);
-        // idx += 4;
-        // buf.writeInt32LE(toId, idx);
-        // idx += 4;
-        toSave += l.fromId + " " + l.toId + "\n";
-    })
-    toSave = toSave.trim();
+            // buf.writeInt32LE(fromId, idx);
+            // idx += 4;
+            // buf.writeInt32LE(toId, idx);
+            // idx += 4;
+            // toSave += l.fromId + " " + l.toId + "\n";
+            let temp = { from: l.fromId, to: l.toId };
+            toSave.push(temp);
+        })
+        // toSave = toSave.trim();
     $.ajax({
         type: "POST",
         url: "/src/SaveGraph.php",
