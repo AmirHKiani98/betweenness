@@ -283,17 +283,17 @@ function updateXY(x, y) {
     $("#selected-node-y").text(y);
 }
 
-newGraph = loadGraph("./graphs/New");
-newGraph.then((loaded) => {
-    setTimeout(() => {
-        // graph = loaded.graph;
-        graph.forEachNode((node) => {
-            console.log(node);
-        });
-        // reloadGraph();
-    }, 1500)
-    console.log(loaded.graph);
-})
+// newGraph = loadGraph("./graphs/New");
+// newGraph.then((loaded) => {
+//     setTimeout(() => {
+//         // graph = loaded.graph;
+//         graph.forEachNode((node) => {
+//             console.log(node);
+//         });
+//         // reloadGraph();
+//     }, 1500)
+//     console.log(loaded.graph);
+// })
 
 //-------------------------- Events --------------
 $("#upload-graph-input").change((event) => {

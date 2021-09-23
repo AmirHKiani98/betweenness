@@ -33,3 +33,15 @@ $("#upload-graph-button").click((event) => {
 $("#upload-graph-button").click(function(evnet) {
 
 })
+$.ajax({
+    type: "POST",
+    url: "/graphs_scripts/SaveGraph",
+    data: { new1: "new" },
+    dataType: "json",
+    success: function(response) {
+        console.log(response);
+    },
+    error: function(error) {
+        console.log(error);
+    }
+});

@@ -2,7 +2,7 @@
 $type = $_POST["type"];
 $data = $_POST["data"];
 $fileName = $_POST["file_name"];
-// $domain = "http://" + $_SERVER["HTTP_HOST"];
+$domain = "http://" . $_SERVER["HTTP_HOST"];
 
 if($type == "nodes"){
     $path = __DIR__ . "/../graphs/" . $fileName . ".json";
@@ -21,8 +21,22 @@ if($type == "nodes"){
     // file_put_contents($path, $data);
     // $linksLinks = "/graphs/" . $fileName . ".gr.txt";
     // echo json_encode(["status" => "ok", "message" => "Graph's links have been saved<br><a href='$linksLinks' download>Links</a>"]);
-    $execute = "node graphs_scripts/SaveGraph.js graphs/$fileName.json";
-    exec($execute);
-    echo json_encode(["status" => "ok", "message" => "Graph's links have been saved<br><a href='' download>Links</a>"]);
+    // $execute = "node graphs_scripts/SaveGraph.js graphs/$fileName.json";
+    // shell_exec("node http://localhost:3000/graphs_scripts/SaveGraph.js graphs/New.json");
+    
+    // // Zipping the files
+    // $zip = new ZipArchive();
+    // if (file_exists(__DIR__ . "/../garphs/zips/$fileName.zip")) {
+    //     unlink(__DIR__ . "/../garphs/zips/$fileName.zip");
+    // }
+    // if($zip->open(__DIR__ . "/../garphs/zips/$fileName.zip", ZIPARCHIVE::CREATE) != TRUE){
+    //     // echo json_encode(["status" => "ok", "message" => "Couldn't create zip file"]);
+    // }else{
+    //     $zip->addFile(__DIR__ . "/../garphs/$fileName.co.txt");
+    //     $zip->addFile(__DIR__ . "/../garphs/$fileName.gr.txt");
+    //     // echo json_encode(["status" => "ok", "message" => "Graph's links have been saved<br><a href='/graphs/zips/$fileName.zip' download>Links</a>"]);
+    // }
+    echo json_encode(["status" => "ok", "message" => "Graph's links have been saved<br><a href='/graphs/$fileName.json' download>Links</a>"]);
+
 }
 
