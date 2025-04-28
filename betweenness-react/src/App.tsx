@@ -3,7 +3,7 @@ import { Sidebar } from "./components/Sidebar";
 
 function App() {
     return (
-        <div className="flex h-screen w-screen">
+        <div className="flex">
             <Sidebar />
             <GraphCanvas />
         </div>

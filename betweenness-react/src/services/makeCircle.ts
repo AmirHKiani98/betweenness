@@ -1,4 +1,4 @@
-function makeCircle(
+export function makeCircle(
     x: string,
     y: string,
     g_id: string,
@@ -23,4 +23,3 @@ function makeCircle(
     circle.setAttribute("id", "circle_" + circle_id);
     g.appendChild(circle);
 }
-module.exports = makeCircle;
