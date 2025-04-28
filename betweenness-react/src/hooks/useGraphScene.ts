@@ -56,7 +56,7 @@ export function useGraphScene() {
             console.log("Webgl scene:", scene);
             scene.setClearColor(1, 1, 1, 1)
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
-            scene.setPixelRatio(2);
+            scene.setPixelRatio(1);
             setScene(scene);
             const initialSceneSize = 10;
             scene.setViewBox({
@@ -65,7 +65,6 @@ export function useGraphScene() {
                 right: initialSceneSize,
                 bottom: initialSceneSize,
             })
-            scene.setPixelRatio(2);
 
             const svgElement = document.getElementsByTagName("svg")[0].querySelector('.scene');
 

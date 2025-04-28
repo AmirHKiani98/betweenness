@@ -1,4 +1,4 @@
-import React from "react";
+import "./GraphCanvas.css";
 import { useGraphScene } from "../hooks/useGraphScene";
 
 export function GraphCanvas() {
