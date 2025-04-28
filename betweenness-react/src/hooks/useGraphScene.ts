@@ -49,63 +49,97 @@ export function useGraphScene() {
             console.error("Canvas element not found");
             return;
         }
+
+        const initializeGraphWithExamples = () => {
+            // Add example nodes
+            graph.addNode("A", { x: -5, y: 5 });
+            graph.addNode("B", { x: 5, y: 5 });
+            graph.addNode("C", { x: 0, y: -5 });
+
+            // Add example links
+            graph.addLink("A", "B");
+            graph.addLink("B", "C");
+            graph.addLink("C", "A");
+
+            // Wait for the dropdown elements to exist before updating them
+            const waitForDropdowns = () => {
+                const toSelection = document.getElementById("to-selection");
+                const fromSelection = document.getElementById("from-selection");
+
+                if (toSelection && fromSelection) {
+                    modifyLinkSelect(graph);
+                } else {
+                    console.warn("Dropdown elements not found, retrying...");
+                    setTimeout(waitForDropdowns, 100); // Retry after 100ms
+                }
+            };
+
+            waitForDropdowns();
+        };
+
+        const resizeCanvas = () => {
+            if (canvasRef.current) {
+                const pixelRatio = window.devicePixelRatio || 1;
+                const parentElement = canvasRef.current.parentElement;
+
+                if (parentElement) {
+                    const { width, height } = parentElement.getBoundingClientRect();
+                    canvasRef.current.width = width * pixelRatio;
+                    canvasRef.current.height = height * pixelRatio;
+                }
+
+                if (scene) {
+                    scene.setPixelRatio(pixelRatio);
+                    scene.setViewBox({
+                        left: -10,
+                        top: -10,
+                        right: 10,
+                        bottom: 10,
+                    });
+                }
+            }
+        };
+
         try {
             console.log("Initializing WebGL scene...");
             const scene = wgl.scene(canvasRef.current);
-            console.log("WebGL scene initialized successfully");
-            console.log("Webgl scene:", scene);
-            scene.setClearColor(1, 1, 1, 1)
-            scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
+            scene.setClearColor(1, 1, 1, 1);
             scene.setPixelRatio(1);
+            scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
             setScene(scene);
-            const initialSceneSize = 10;
-            scene.setViewBox({
-                left: -initialSceneSize,
-                top: -initialSceneSize,
-                right: initialSceneSize,
-                bottom: initialSceneSize,
-            })
-
-            const svgElement = document.getElementsByTagName("svg")[0].querySelector('.scene');
-
-            let svgConntainerWays: SVGContainer; // 🔥 DECLARE outside
-
-            if (svgElement instanceof SVGGElement) {
-                svgConntainerWays = new SVGContainer(svgElement, updateSVGElements);
-                scene.appendChild(svgConntainerWays); // ✅ now safe
-            } else {
-                console.error("SVG element with class 'scene' not found or is not an SVGGElement");
-            }
-            setLines(new wgl.WireCollection(graph.getLinksCount()));
-            graph.forEachLink(function(link) {
-                const from = graph.getNode(link.fromId).data;
-                const to = graph.getNode(link.toId).data;
-                lines.add({ from, to });
-                
+    
+            // Initialize graph nodes and links
+            initializeGraphWithExamples();
+    
+            // Create local WireCollection
+            const lines = new wgl.WireCollection(graph.getLinksCount());
+    
+            graph.forEachLink((link) => {
+                const from = graph.getNode(link.fromId)?.data;
+                const to = graph.getNode(link.toId)?.data;
+                if (from && to) {
+                    lines.add({ from, to });
+                }
             });
-            const allnodes: any[] = [];
-        
-            graph.forEachNode(function(node) {
-                allnodes.push(node);
-            })
-        
-            lines.color = { r: 244 / 255, g: 250 / 255, b: 230 / 255, a: 1 }
-            let allPoint = getPointList(graph);
-            hetTestTreeRef.current = initHitTestTree(allPoint);
-        
-            allPoint = getPointList(graph);
-            document.getElementById("canvas-id")?.addEventListener("click", handleMouseDown);
-            document.getElementById("canvas-id")?.addEventListener("touchmove", handleMouseDown);
-            document.getElementById("find-best-betweenness")?.addEventListener("click", findBestBetweenness);
-            document.getElementById("reset-graph")?.addEventListener("click", resetGraph);
-            document.getElementById("add-node-button")?.addEventListener("click", addNodeFunction);
-            document.getElementById("add-link-button")?.addEventListener("click", addLink);
-            $("#reset-graph").click(resetGraph);
-            $("#add-node-button").click(addNodeFunction)
-            $("#add-link-button").click(addLink);
+    
+            lines.color = { r: 0 / 255, g: 0 / 255, b: 0 / 255, a: 1 };
+    
+            // ✅ Now append AFTER fully building it
+            scene.appendChild(lines);
+    
+            // Attach resize logic
+            resizeCanvas();
+            window.addEventListener("resize", resizeCanvas);
+            scene.renderFrame();
+            console.log("WebGL scene initialized successfully");
+    
         } catch (error) {
             console.error("Error initializing WebGL scene:", error);
         }
+    
+        return () => {
+            window.removeEventListener("resize", resizeCanvas);
+        };
     }, []);
 
     return {

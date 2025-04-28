@@ -12,12 +12,12 @@ export function Sidebar() {
             </div>
 
             <div className="mt-4">
-            <select defaultValue="" className="border border-gray-300 rounded py-2 px-3 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select defaultValue="" id="from-selection" className="border border-gray-300 rounded py-2 px-3 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="" disabled>From</option>
                 <option value="node1">Node 1</option>
                 <option value="node2">Node 2</option>
             </select>
-            <select defaultValue="" className="border border-gray-300 rounded py-2 px-3 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select defaultValue="" id="to-selection" className="border border-gray-300 rounded py-2 px-3 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="" disabled>To</option>
                 <option value="node1">Node 1</option>
                 <option value="node2">Node 2</option>
