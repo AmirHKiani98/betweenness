@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@reduxjs/toolkit": "^2.7.0",
+    "@tailwindcss/vite": "^4.1.4",
     "buffer": "^6.0.3",
     "d3-geo": "^1.11.9",
     "event-stream": "^4.0.1",
@@ -19,8 +19,12 @@
     "ngraph.graph": "^19.1.0",
     "ngraph.path": "^1.3.1",
     "path": "^0.12.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "refor": "^0.1.6",
     "request": "^2.88.2",
+    "tailwindcss": "^4.1.4",
     "w-gl": "^0.4.0",
     "webpack": "^5.52.0",
     "yaqt": "^1.2.1"

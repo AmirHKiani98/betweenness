@@ -1,6 +1,6 @@
 // Importing packages
 const toList = require('./Float32ToObject.js');
-const bestBetweenness = require("./bestBetweenness");
+const bestBetweenness = require("./BestBetweenness");
 const getClickedCoordinates = require("./GetClickedCoordinates");
 const findNearestPoint = require('./findNearestPoint');
 const initHitTestTree = require("./InitHitTestTree");
