@@ -1,4 +1,4 @@
-function getClickedCoordinates(e: MouseEvent | TouchEvent, scene: { getSceneCoordinate: (x: number, y: number) => any }) {
+export function getClickedCoordinates(e: MouseEvent | TouchEvent, scene: { getSceneCoordinate: (x: number, y: number) => any }) {
     let s;
 
     if ('touches' in e) {
@@ -9,4 +9,3 @@ function getClickedCoordinates(e: MouseEvent | TouchEvent, scene: { getSceneCoor
     }
     return s;
 }
-export default getClickedCoordinates;

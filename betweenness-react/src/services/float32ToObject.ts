@@ -1,7 +1,7 @@
 type Point = { x: number; y: number };
 type Float32Object = { from: Point; to: Point };
 
-function toList(float32Array: Float32Array): Float32Object[] {
+export function toList(float32Array: Float32Array): Float32Object[] {
     const object: Float32Object[] = [];
     let from: Point = { x: 0, y: 0 };
     let to: Point = { x: 0, y: 0 };
@@ -30,4 +30,3 @@ function toList(float32Array: Float32Array): Float32Object[] {
     }
     return object;
 }
-export default toList;

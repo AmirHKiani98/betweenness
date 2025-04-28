@@ -1,6 +1,6 @@
 import path from 'ngraph.path';
 
-function findDistance2D(
+export function findDistance2D(
     node1: { data: { x: number; y: number } },
     node2: { data: { x: number; y: number } },
     graph: any
@@ -32,4 +32,3 @@ function findDistance2D(
     }
     return distance;
 }
-module.exports = findDistance2D;

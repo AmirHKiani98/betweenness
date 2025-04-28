@@ -1,4 +1,4 @@
-function findNearestPoint(
+export function findNearestPoint(
     x: number,
     y: number,
     hetTestTree: { pointsAround: (x: number, y: number, maxDistance: number) => number[] },
@@ -14,4 +14,3 @@ function findNearestPoint(
         return null;
     }
 }
-module.exports = findNearestPoint;
