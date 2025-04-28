@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import $ from 'jquery';
 // Import missing functions or define them
 import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
-import * as wgl from 'w-gl';
+import * as wgl from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
 import { getPointList } from '../services/getPointList';
 import { initHitTestTree } from '../services/initHitTestTree';
@@ -40,7 +40,6 @@ export function useGraphScene() {
     const [graph, setGraph] = useState<Graph<NodeData>>(createGraph<NodeData>());
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
     const [lines, setLines] = useState(() => new wgl.WireCollection(graph.getLinksCount()));
-    const [betweenness, setBetweenness] = useState<any>(null);
 
     useEffect(() => {
         if (!canvasRef.current) {
@@ -50,9 +49,9 @@ export function useGraphScene() {
 
         const initializeGraphWithExamples = () => {
             // Add example nodes
-            graph.addNode("A", { x: -5, y: 5 });
-            graph.addNode("B", { x: 5, y: 5 });
-            graph.addNode("C", { x: 0, y: -5 });
+            graph.addNode("A", { id: "A", x: -5, y: 5 });
+            graph.addNode("B", { id: "B", x: 5, y: 10 });
+            graph.addNode("C", { id: "C", x: 0, y: -5 });
 
             // Add example links
             graph.addLink("A", "B");
@@ -120,7 +119,18 @@ export function useGraphScene() {
 
             // Initialize graph nodes and links
             initializeGraphWithExamples();
-
+            const points = new wgl.PointCollection(graph.getNodesCount());
+            graph.forEachNode(node => {
+                if (node.data) {
+                    points.add(node.data); // assuming node.data has {x, y}
+                }
+            });
+            scene.setClearColor(0, 0, 0, 1);
+            // points.size = 0.1; // Diameter of circle
+            // points.color = { r: 100 / 255, g: 100 / 255, b: 100 / 255 };
+            console.log("Points added to scene:", points);
+            scene.appendChild(points);
+            
             // Create local WireCollection
             const lines = new wgl.WireCollection(graph.getLinksCount());
             graph.forEachLink((link) => {
@@ -131,8 +141,8 @@ export function useGraphScene() {
                 }
             });
 
-            lines.color = { r: 0 / 255, g: 0 / 255, b: 0 / 255, a: 1 };
-
+            lines.color = { r: 100 / 255, g: 100 / 255, b: 100 / 255, a: 1 };
+            console.log("Lines added to scene:", lines);
             // Append lines to the scene
             scene.appendChild(lines);
 
@@ -160,7 +170,5 @@ export function useGraphScene() {
         setToAddNode,
         lines,
         setLines,
-        betweenness,
-        setBetweenness,
     };
 }
