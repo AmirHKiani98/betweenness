@@ -10,3 +10,4 @@ export {default as Element} from './src/Element';
 export {default as isWebGLEnabled} from './src/isWebGLEnabled';
 export {default as utils} from './src/glUtils';
 export {default as Color} from './src/Color';
+export {default as ActivePoints} from './input/ActivePoints';

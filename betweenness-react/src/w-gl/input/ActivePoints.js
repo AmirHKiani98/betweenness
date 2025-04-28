@@ -1,5 +1,5 @@
-var Element = require('../src/Element');
-var createTree = require('d3-quadtree').quadtree;
+import Element from '../src/Element';
+import { quadtree as createTree } from 'd3-quadtree';
 
 /**
  * Add this element to your scene to get `point-enter`, `point-leave`,
@@ -69,7 +69,6 @@ class ActivePoints extends Element {
 
   onMouseMove(event) {
     var e = event.originalEvent;
-
     var res = this.findUnderCursor(event.sceneX, event.sceneY);
     if (!res) {
       if (this.prevHighlighted) {
@@ -101,4 +100,4 @@ class ActivePoints extends Element {
   }
 }
 
-module.exports = ActivePoints;
+export default ActivePoints;

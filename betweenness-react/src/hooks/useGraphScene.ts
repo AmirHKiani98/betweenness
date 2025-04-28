@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import $ from 'jquery';
 // Import missing functions or define them
 import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
-import * as wgl from '../w-gl/index.js';
+import {WireCollection, PointCollection, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
 import { getPointList } from '../services/getPointList';
 import { initHitTestTree } from '../services/initHitTestTree';
@@ -36,10 +36,10 @@ function modifyLinkSelect(graph: Graph<NodeData>) {
 }
 export function useGraphScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [scene, setScene] = useState<wgl.Scene | null>(null);
+    const [scene, setScene] = useState<Scene | null>(null);
     const [graph, setGraph] = useState<Graph<NodeData>>(createGraph<NodeData>());
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
-    const [lines, setLines] = useState(() => new wgl.WireCollection(graph.getLinksCount()));
+    const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
 
     useEffect(() => {
         if (!canvasRef.current) {
@@ -57,7 +57,7 @@ export function useGraphScene() {
             graph.addLink("A", "B");
             graph.addLink("B", "C");
             graph.addLink("C", "A");
-
+            
             // Wait for the dropdown elements to exist before updating them
             const waitForDropdowns = () => {
                 const toSelection = document.getElementById("to-selection");
@@ -74,7 +74,7 @@ export function useGraphScene() {
             waitForDropdowns();
         };
 
-        const resizeCanvas = (sceneInstance: wgl.Scene | null) => {
+        const resizeCanvas = (sceneInstance: Scene | null) => {
             if (canvasRef.current && sceneInstance) {
                 const pixelRatio = window.devicePixelRatio || 1;
                 const parentElement = canvasRef.current.parentElement;
@@ -102,12 +102,12 @@ export function useGraphScene() {
 
         try {
             console.log("Initializing WebGL scene...");
-            const scene = wgl.scene(canvasRef.current);
+            const scene = createScene(canvasRef.current);
             scene.setClearColor(1, 1, 1, 1);
             scene.setPixelRatio(1);
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
-            
-
+            const activePoints = new ActivePoints(scene);
+            scene.appendChild(activePoints);
             // Initialize the SVG container
             const svgElement = document.querySelector("svg .scene");
             if (svgElement instanceof SVGGElement) {
@@ -119,20 +119,24 @@ export function useGraphScene() {
 
             // Initialize graph nodes and links
             initializeGraphWithExamples();
-            const points = new wgl.PointCollection(graph.getNodesCount());
+            const points = new PointCollection(graph.getNodesCount());
+            points.color = new Color(1, 1, 1, 1);
             graph.forEachNode(node => {
                 if (node.data) {
                     points.add(node.data); // assuming node.data has {x, y}
                 }
             });
+            points.pointsAccessor.forEach(accessor => {
+                accessor.setColor(new Color(1, 0, 0, 1)); // red color
+            });
             scene.setClearColor(0, 0, 0, 1);
             // points.size = 0.1; // Diameter of circle
-            // points.color = { r: 100 / 255, g: 100 / 255, b: 100 / 255 };
+            // points.color = new Color(0, 0, 0, 1); // Black color
             console.log("Points added to scene:", points);
             scene.appendChild(points);
             
             // Create local WireCollection
-            const lines = new wgl.WireCollection(graph.getLinksCount());
+            const lines = new WireCollection(graph.getLinksCount());
             graph.forEachLink((link) => {
                 const from = graph.getNode(link.fromId)?.data;
                 const to = graph.getNode(link.toId)?.data;
