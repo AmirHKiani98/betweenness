@@ -38,9 +38,7 @@ export function useGraphScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [scene, setScene] = useState<wgl.Scene | null>(null);
     const [graph, setGraph] = useState<Graph<NodeData>>(createGraph<NodeData>());
-    const hetTestTreeRef = useRef<any>(null);
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
-    const [hetTestTree, setHetTestTree] = useState<any>(null);
     const [lines, setLines] = useState(() => new wgl.WireCollection(graph.getLinksCount()));
     const [betweenness, setBetweenness] = useState<any>(null);
 
@@ -77,26 +75,29 @@ export function useGraphScene() {
             waitForDropdowns();
         };
 
-        const resizeCanvas = () => {
-            if (canvasRef.current) {
+        const resizeCanvas = (sceneInstance: wgl.Scene | null) => {
+            if (canvasRef.current && sceneInstance) {
                 const pixelRatio = window.devicePixelRatio || 1;
                 const parentElement = canvasRef.current.parentElement;
-
+                
                 if (parentElement) {
                     const { width, height } = parentElement.getBoundingClientRect();
                     canvasRef.current.width = width * pixelRatio;
                     canvasRef.current.height = height * pixelRatio;
+        
+                    const svgElement = parentElement.querySelector("svg");
+                    if (svgElement) {
+                        svgElement.setAttribute("width", `${width}`);
+                        svgElement.setAttribute("height", `${height}`);
+                    }
                 }
-
-                if (scene) {
-                    scene.setPixelRatio(pixelRatio);
-                    scene.setViewBox({
-                        left: -10,
-                        top: -10,
-                        right: 10,
-                        bottom: 10,
-                    });
-                }
+                sceneInstance.setPixelRatio(pixelRatio);
+                sceneInstance.setViewBox({
+                    left: -10,
+                    top: -10,
+                    right: 10,
+                    bottom: 10,
+                });
             }
         };
 
@@ -106,14 +107,22 @@ export function useGraphScene() {
             scene.setClearColor(1, 1, 1, 1);
             scene.setPixelRatio(1);
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
-            setScene(scene);
-    
+            
+
+            // Initialize the SVG container
+            const svgElement = document.querySelector("svg .scene");
+            if (svgElement instanceof SVGGElement) {
+                const svgContainer = new SVGContainer(svgElement, updateSVGElements);
+                scene.appendChild(svgContainer);
+            } else {
+                console.error("SVG element with class 'scene' not found or is not an SVGGElement");
+            }
+
             // Initialize graph nodes and links
             initializeGraphWithExamples();
-    
+
             // Create local WireCollection
             const lines = new wgl.WireCollection(graph.getLinksCount());
-    
             graph.forEachLink((link) => {
                 const from = graph.getNode(link.fromId)?.data;
                 const to = graph.getNode(link.toId)?.data;
@@ -121,22 +130,22 @@ export function useGraphScene() {
                     lines.add({ from, to });
                 }
             });
-    
+
             lines.color = { r: 0 / 255, g: 0 / 255, b: 0 / 255, a: 1 };
-    
-            // ✅ Now append AFTER fully building it
+
+            // Append lines to the scene
             scene.appendChild(lines);
-    
+
             // Attach resize logic
-            resizeCanvas();
-            window.addEventListener("resize", resizeCanvas);
+            setScene(scene);
+            resizeCanvas(scene);
+            window.addEventListener("resize", () => resizeCanvas(scene));
             scene.renderFrame();
             console.log("WebGL scene initialized successfully");
-    
         } catch (error) {
             console.error("Error initializing WebGL scene:", error);
         }
-    
+
         return () => {
             window.removeEventListener("resize", resizeCanvas);
         };
@@ -149,8 +158,6 @@ export function useGraphScene() {
         scene,
         toAddNode,
         setToAddNode,
-        hetTestTree,
-        setHetTestTree,
         lines,
         setLines,
         betweenness,

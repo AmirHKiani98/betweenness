@@ -27,11 +27,13 @@ export class SVGContainer extends wgl.Element {
         const dx = transform.dx / pixelRatio;
         const dy = transform.dy / pixelRatio;
 
+        // Update the transform attribute of the <g> element
         this.g.setAttributeNS(null, 'transform', `matrix(${scale}, 0, 0, ${scale}, ${dx}, ${dy})`);
         this.scale = transform.scale;
         this.dx = transform.dx;
         this.dy = transform.dy;
 
+        // Call the draw callback to allow additional updates
         this.drawCallback(this);
     }
 
