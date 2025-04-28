@@ -27,9 +27,6 @@ function activatorsFunction(event) {
 $("#upload-graph-button").click((event) => {
     $("#upload-graph-input").trigger("click");
 });
-// $("#download-graph-button").click((event) => {
-//     $("#download-graph-input").trigger("click");
-// })
 $("#upload-graph-button").click(function(evnet) {
 
 })
