@@ -4,13 +4,11 @@ import $ from 'jquery';
 import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
 import {WireCollection, PointCollection, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
-import { getPointList } from '../services/getPointList';
-import { initHitTestTree } from '../services/initHitTestTree';
 import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 
 function updateSVGElements(svgConntainer: SVGContainer) {
-    const strokeWidth = 6 / svgConntainer.getScale();
+
 }
 
 function modifyLinkSelect(graph: Graph<NodeData>) {
@@ -40,6 +38,7 @@ export function useGraphScene() {
     const [graph, setGraph] = useState<Graph<NodeData>>(createGraph<NodeData>());
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
     const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
+    const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
 
     useEffect(() => {
         if (!canvasRef.current) {
@@ -70,7 +69,6 @@ export function useGraphScene() {
                     setTimeout(waitForDropdowns, 100); // Retry after 100ms
                 }
             };
-
             waitForDropdowns();
         };
 
@@ -107,6 +105,10 @@ export function useGraphScene() {
             scene.setPixelRatio(1);
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
             const activePoints = new ActivePoints(scene);
+            scene.on('point-click', (pointData, evt) => {
+                setSelectedNode(pointData);
+                console.log("Point clicked:", selectedNode);
+            });
             scene.appendChild(activePoints);
             // Initialize the SVG container
             const svgElement = document.querySelector("svg .scene");

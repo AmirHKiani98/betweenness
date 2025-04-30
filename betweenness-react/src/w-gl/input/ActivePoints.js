@@ -90,6 +90,7 @@ class ActivePoints extends Element {
 
   onClick(event) {
     var e = event.originalEvent;
+    
     var res = this.findUnderCursor(event.sceneX, event.sceneY);
     if (res) {
       this.scene.fire('point-click', res, {
@@ -97,6 +98,7 @@ class ActivePoints extends Element {
         y: e.clientY
       });
     }
+    res = null;
   }
 }
 
