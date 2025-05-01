@@ -1,7 +1,6 @@
 import * as wgl from "w-gl";
 import { makeCircle } from "./makeCircle";
 import React, { MouseEvent } from "react";
-
 interface Graph {
   getNode: (id: string) => Node | undefined;
   addNode: (id: string, data: { x: number; y: number }) => void;

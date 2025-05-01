@@ -62,18 +62,6 @@ export function useGraphScene() {
             graph.addLink("C", "A");
             
             // Wait for the dropdown elements to exist before updating them
-            const waitForDropdowns = () => {
-                const toSelection = document.getElementById("to-selection");
-                const fromSelection = document.getElementById("from-selection");
-
-                if (toSelection && fromSelection) {
-                    modifyLinkSelect(graph);
-                } else {
-                    console.warn("Dropdown elements not found, retrying...");
-                    setTimeout(waitForDropdowns, 100); // Retry after 100ms
-                }
-            };
-            waitForDropdowns();
         };
 
         const resizeCanvas = (sceneInstance: Scene | null) => {
