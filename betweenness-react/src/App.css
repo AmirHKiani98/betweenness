@@ -17,9 +17,10 @@
     --color-main-900: oklch(0.30 0.15 240);
 }
 
-select, input[type="text"]{
+select, input[type="text"], input[type="number"]{
     @apply border border-gray-300 rounded py-2 px-3 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-main-500;
 }
+
 button{
     @apply bg-main-500 text-white py-2 px-4 rounded w-full mb-2 hover:bg-main-600
 }

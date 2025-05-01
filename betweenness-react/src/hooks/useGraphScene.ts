@@ -33,7 +33,7 @@ export function useGraphScene() {
     const isRemovingNodeRef = useRef(isRemovingNode);
     const isDrawingLine = useSelector((state: RootState) => (state.graph as { isDrawingLine: boolean }).isDrawingLine);
     const isDrawingLineRef = useRef(isDrawingLine);
-
+    
     const isRemovingLine = useSelector((state: RootState) => (state.graph as { isRemovingLine: boolean }).isRemovingLine);
     const isRemovingLineRef = useRef(isRemovingLine);
     // const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
@@ -61,6 +61,10 @@ export function useGraphScene() {
     function removeLine(line){
         const lineId = line.id;
         
+    }
+    function lineExists(from: string, to: string) {
+        const link = graph.getLink(from, to);
+        return link !== null;
     }
 
 
@@ -168,12 +172,27 @@ export function useGraphScene() {
             });
             const lines = new LineCollection(graph.getLinksCount());
             scene.on('point-click', (point: { id: string; p: PointAccessor }) => {
-
-                if(!isDrawingNodeRef.current && !isRemovingNodeRef.current) {
+                
+                if(!isDrawingNodeRef.current && !isRemovingNodeRef.current && !isDrawingLineRef.current){
                     selectNode(point.p);
                     scene.renderFrame();
                 }
-
+                else if(isDrawingLineRef.current){
+                    console.log("Drawing line");
+                    const selectedNode = selectedNodeRef.current;
+                    if (selectedNode) {
+                        if(selectedNode.id !== point.id && !lineExists(selectedNode.id, point.id) && !lineExists(point.id, selectedNode.id)){
+                            console.log("Adding line");
+                            const linkId = randomString(10);
+                            graph.addLink(selectedNode.id, point.id, { id: linkId });
+                            lines.add({ from: selectedNode, to: point.p, id: linkId });
+                            scene.renderFrame();
+                        }
+                    }else{
+                        selectNode(point.p);
+                        scene.renderFrame();
+                    }
+                }
                 else if(isRemovingNodeRef.current) {
                     const links = graph.getLinks(point.id);
                     if (links && links.length) {
@@ -187,6 +206,7 @@ export function useGraphScene() {
                     points.remove(point.p);
                     scene.renderFrame();
                 }
+
 
             });
             

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine } from '../store/graphSlice';
 import type { RootState } from '../store/store';
 import { Button } from "flowbite-react";
+import { NumberInput } from '../components/NumberInput.tsx';
 
 
 
@@ -123,14 +124,23 @@ export function Sidebar() {
                         </motion.button>
                 </TooltipWrapper>
             </div>
-            <h2 className="text-xl font-bold mt-4">Interactive Web</h2>
-            <div className="flex justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-2xl [&>div>span]:text-main-600 [&>div]:item-center">
+            <h2 className="text-xl font-bold mt-4 mb-4">Coordinates</h2>
+            <div className="flex justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
                 <div><p>x</p><span>{x ?? "----"}</span></div>
                 <div><p>y</p><span>{y ?? "----"}</span></div>
                 
             </div>
-            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-2xl [&>div>span]:text-main-600 [&>div]:item-center">
-                <p>Mouse on line:</p><span>{hoveredLineId === "" ? "----" : hoveredLineId}</span>
+            <h2 className="text-xl font-bold mt-4 mb-4">Coordinates</h2>
+            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
+                <div className="flex flex-row justify-between items-center w-full">
+                    <p>Mouse on line:</p><span>{hoveredLineId === "" ? "----" : hoveredLineId}</span>
+                </div>
+            </div>
+            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
+                <div className="flex flex-row justify-between items-center">
+                    <p>Capacity</p>
+                    <NumberInput className="!w-1/3 !h-10 !text-main-600"></NumberInput>
+                </div>
             </div>
         </div>
     );
