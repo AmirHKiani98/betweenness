@@ -8,7 +8,7 @@ import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 import {randomString} from "../services/utilities";
 import { RootState } from '../store/store';
-import { setX, setY} from '../store/graphSlice';
+import { setX, setY, setLineIdDisplay} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
 function updateSVGElements(svgConntainer: SVGContainer) {
     // Example usage: Log the SVG container or perform operations on it
@@ -33,9 +33,13 @@ export function useGraphScene() {
     const isRemovingNodeRef = useRef(isRemovingNode);
     const isDrawingLine = useSelector((state: RootState) => (state.graph as { isDrawingLine: boolean }).isDrawingLine);
     const isDrawingLineRef = useRef(isDrawingLine);
+
+    const isRemovingLine = useSelector((state: RootState) => (state.graph as { isRemovingLine: boolean }).isRemovingLine);
+    const isRemovingLineRef = useRef(isRemovingLine);
     // const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
     const selectedNodeRef = useRef<PointAccessor | null>(null);
     const selectedLineRef = useRef<LineAccessor | null>(null);
+
 
     const dispatch = useDispatch();
     function selectNode(point: PointAccessor) {
@@ -54,29 +58,20 @@ export function useGraphScene() {
         }
     }
 
-    function selectLine(line){
-        console.log(line);
+    function removeLine(line){
         const lineId = line.id;
-        if(lineId){
-            
-            if (selectedLineRef.current && selectedLineRef.current.id === lineId) {
-                line.setColor(NODE_DEFAULT_COLOR);
-                selectedLineRef.current = null;
-            } else {
-                if (selectedLineRef.current) {
-                    selectedLineRef.current.setColor(NODE_DEFAULT_COLOR);
-                }
-                selectedLineRef.current = line;
-                line.setColor(SELECTED_NODE_COLOR);
-            }
-        }
+        
     }
+
+
+    
 
     useEffect(() => {
         isDrawingNodeRef.current = isDrawingNode; // ✅ just update ref
         isRemovingNodeRef.current = isRemovingNode;
         isDrawingLineRef.current = isDrawingLine;
-      }, [isDrawingNode, isRemovingNode, isDrawingLine]);
+        isRemovingLineRef.current = isRemovingLine;
+      }, [isDrawingNode, isRemovingNode, isDrawingLine, isRemovingLine]);
       
     useEffect(() => {
         
@@ -195,11 +190,23 @@ export function useGraphScene() {
 
             });
             
-            scene.on('line-click', (line) => {
+            scene.on('line-enter', (line) => {
                 if(!isDrawingLineRef.current){
-                    selectLine(line.l);
-                    scene.renderFrame();
+                    const lineId = line.id;
+                    dispatch(setLineIdDisplay(lineId));
                 }
+            });
+            scene.on('line-click', (line) => {
+                if(isRemovingLineRef.current){
+                    const lineId = line.l.id;
+                    const link = graph.getLink(line.l.from.id, line.l.to.id);
+                    if (link) {
+                        lines.remove(lineId);
+                        graph.removeLink(link);
+                        scene.renderFrame();
+                    }
+                }
+                
             });
 
             scene.appendChild(points);

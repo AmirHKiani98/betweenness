@@ -51,6 +51,7 @@ class BaseLineCollection extends Element {
   }
   
   remove(identifier) {
+    console.log('Removed line with id:', identifier);
     if (!identifier) throw new Error('Identifier is required');
   
     const index = this.allAccessors.findIndex(a => a.id === identifier);
@@ -59,7 +60,7 @@ class BaseLineCollection extends Element {
     // Remove the accessor
     this.allAccessors.splice(index, 1);
     this.count -= 1;
-  
+    
     // Shift all subsequent lines in the buffer
     const fromOffset = index * this.itemsPerLine;
     const toOffset = (index + 1) * this.itemsPerLine;

@@ -14,12 +14,12 @@ export function Sidebar() {
     const dispatch = useDispatch();
     const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
     const isDrawingLine = useSelector((state: RootState) => state.graph.isDrawingLine);
-    console.log(isDrawingLine);
     const isRemvoingNode = useSelector((state: RootState) => state.graph.isRemovingNode);
     const isRemovingLine = useSelector((state: RootState) => state.graph.isRemovingLine);
     const x = useSelector((state: RootState) => state.graph.x);
     const y = useSelector((state: RootState) => state.graph.y);
-
+    const hoveredLineId = useSelector((state: RootState) => state.graph.hoveredLineId);
+    // console.log(isRemovingLine);
     return (
         <div className="p-4 bg-gray-200 h-full w-80 overflow-y-auto fixed right-0 top-0 z-50">
             <h2 className="text-xl font-bold mb-4">Graph Controls</h2>
@@ -127,7 +127,10 @@ export function Sidebar() {
             <div className="flex justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-2xl [&>div>span]:text-main-600 [&>div]:item-center">
                 <div><p>x</p><span>{x ?? "----"}</span></div>
                 <div><p>y</p><span>{y ?? "----"}</span></div>
-
+                
+            </div>
+            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-2xl [&>div>span]:text-main-600 [&>div]:item-center">
+                <p>Mouse on line:</p><span>{hoveredLineId === "" ? "----" : hoveredLineId}</span>
             </div>
         </div>
     );
