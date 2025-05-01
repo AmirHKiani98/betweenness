@@ -28,7 +28,7 @@ async function sendFilesToBackend(files: Record<string, string>) {
       formData.append(name, new Blob([content], { type: "text/plain" }), `${name}.txt`);
     });
   
-    const response = await fetch("http://localhost:8080/upload-and-run", {
+    const response = await fetch("http://localhost:9090/upload-and-run", {
       method: "POST",
       body: formData,
     });

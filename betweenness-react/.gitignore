@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Backend
-backend
+server

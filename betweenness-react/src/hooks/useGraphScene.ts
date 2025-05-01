@@ -20,7 +20,7 @@ const NODE_DEFAULT_COLOR = new Color(1,0,1,0);
 
 const SELECTED_LINE_COLOR = new Color(0, 0.5, 0.8,1);
 const LINE_DEFAULT_COLOR = new Color(0, 0.2, 0.2, 1);
-const BACKGROUND_COLOR = new Color(0, 0, 0, 0);
+const BACKGROUND_COLOR = new Color(0, 0.5, 0.5, 0);
 
 export function useGraphScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -89,19 +89,30 @@ export function useGraphScene() {
 
         const initializeGraphWithExamples = () => {
             // Add example nodes
-            graph.addNode("A", { id: "A", x: -5, y: 5 });
-            graph.addNode("B", { id: "B", x: 5, y: 5 });
-            graph.addNode("C", { id: "C", x: 0, y: -5 });
-            dispatch(addPoint({ id: "A", x: -5, y: 5 }));
-            dispatch(addPoint({ id: "B", x: 5, y: 5 }));
-            dispatch(addPoint({ id: "C", x: 0, y: -5 }));
+            const exampleNodes = [
+                { id: "A", x: 0, y: 5 },
+                { id: "A-1", x: 0, y: 10 },
+                { id: "B", x: 5, y: 5 },
+                { id: "C", x: 10, y: 5 },
+                { id: "D", x: 15, y: 5 }
+            ]
+            for (const node of exampleNodes) {
+                graph.addNode(node.id, { id: node.id, x: node.x, y: node.y });
+                dispatch(addPoint({ id: node.id, x: node.x, y: node.y }));
+            }
+            
             // Add example links
-            graph.addLink("A", "B", { id: "link-AB" });
-            graph.addLink("B", "C", { id: "link-BC" });
-            graph.addLink("C", "A", { id: "link-CA" });
-            dispatch(addLink({ from: "A", to: "B", id: "link-AB" }));
-            dispatch(addLink({ from: "B", to: "C", id: "link-BC" }));
-            dispatch(addLink({ from: "C", to: "A", id: "link-CA" }));
+            const exampleLinks = [
+                { from: "A-1", to: "A", id: "link-A1A" },
+                { from: "A", to: "B", id: "link-AB" },
+                { from: "B", to: "C", id: "link-BC" },
+                { from: "C", to: "D", id: "link-CA" }
+            ];
+            for (const link of exampleLinks) {
+                graph.addLink(link.from, link.to, { id: link.id });
+                dispatch(addLink({ from: link.from, to: link.to, id: link.id }));
+            }
+            
             
             // Wait for the dropdown elements to exist before updating them
         };
