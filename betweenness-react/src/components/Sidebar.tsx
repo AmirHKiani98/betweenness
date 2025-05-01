@@ -5,25 +5,17 @@ import { useFloating, offset, useHover, useInteractions, FloatingPortal, autoUpd
 import "../App.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareNodes, faPencil } from '@fortawesome/free-solid-svg-icons'
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleDrawingNode } from '../store/graphSlice';
+import type { RootState } from '../store/store';
+
+
 
 export function Sidebar() {
-    const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-    const [toolTipText, setToolTipText] = useState(null);
-    const [isDrawingNode, setIsDrawingNode] = useState(false);
-    const {
-        refs,
-        floatingStyles,
-        context,
-    } = useFloating({
-        open: isTooltipOpen,
-        onOpenChange: setIsTooltipOpen,
-        middleware: [offset(8)],
-        whileElementsMounted: autoUpdate, // auto updates on scroll/resizes
-        placement: 'top', // force on top
-    });
+    const dispatch = useDispatch();
+    const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
+    
 
-    const hover = useHover(context);
-    const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
     return (
         <div className="p-4 bg-gray-200 h-full w-80 overflow-y-auto fixed right-0 top-0 z-50">
@@ -55,7 +47,7 @@ export function Sidebar() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`!w-20 !flex gap-2 justify-center ${isDrawingNode ? "!bg-blue-500 !text-white" : "!bg-gray-300 !text-gray-700"}`}
-                onClick={() => setIsDrawingNode(!isDrawingNode)}
+                onClick={() => dispatch(toggleDrawingNode())}
             >
                 <FontAwesomeIcon icon={faPencil} />
                 <FontAwesomeIcon icon={faShareNodes} />
