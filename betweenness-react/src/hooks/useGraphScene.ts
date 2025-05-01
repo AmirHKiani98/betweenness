@@ -129,19 +129,15 @@ export function useGraphScene() {
                     points.add(node.data); // assuming node.data has {x, y}
                 }
             });
-            scene.on('click', (pointData, evt) => {
+            scene.on('click', (pointData) => {
+                
                 const { sceneX, sceneY } = pointData;
-                console.log("Point clicked:", sceneX, sceneY);
                 const id = randomString(10);
-                console.log("Id", id);
-                const nodeId = graph.addNode(id, { id: id, x: sceneX, y: sceneY });
-                console.log("Node added:", nodeId);
-                points.add({ sceneX, sceneY });
-                graph.forEachNode(node => {
-                    if (node.data) {
-                        points.add(node.data); // assuming node.data has {x, y}
-                    }
-                });
+                const newNode = graph.addNode(id, { id: id, x: sceneX, y: sceneY });
+                console.log("Node added:", newNode);
+                if (newNode.data) {
+                    points.add(newNode.data); // assuming node.data has {x, y}
+                }
                 scene.renderFrame();
             });
             points.pointsAccessor.forEach(accessor => {
@@ -150,7 +146,6 @@ export function useGraphScene() {
             scene.setClearColor(0, 0, 0, 1);
             // points.size = 0.1; // Diameter of circle
             // points.color = new Color(0, 0, 0, 1); // Black color
-            console.log("Points added to scene:", points);
             scene.appendChild(points);
             
             // Create local WireCollection
@@ -164,7 +159,6 @@ export function useGraphScene() {
             });
 
             lines.color = { r: 100 / 255, g: 100 / 255, b: 100 / 255, a: 1 };
-            console.log("Lines added to scene:", lines);
             // Append lines to the scene
             scene.appendChild(lines);
 

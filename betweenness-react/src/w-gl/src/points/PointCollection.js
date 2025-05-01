@@ -12,9 +12,9 @@ class PointCollection extends Element {
 
     // TODO: Not sure I like this too much. But otherwise how can I track interactivity?
     this.pointsAccessor = [];
-
+    capacity = 5;
     this.capacity = capacity;
-    this.pointsBuffer = new Float32Array(100000 * ITEMS_PER_POINT);
+    this.pointsBuffer = new Float32Array(capacity * ITEMS_PER_POINT);
     this.count = 0;
     this._program = null;
     this.color = new Color(1, 1, 1, 1);
@@ -22,8 +22,12 @@ class PointCollection extends Element {
   }
 
   draw(gl, screen) {
+    
     if (!this._program) {
       this._program = makeNodeProgram(gl, this.pointsBuffer);
+    }
+    else {
+      this._program.updateData(this.pointsBuffer);
     }
 
     this._program.draw(this.worldTransform, screen, this.count);
@@ -38,6 +42,7 @@ class PointCollection extends Element {
 
   add(point, data) {
     if (!point) throw new Error('Point is required');
+    // console.trace("Adding point", point);
     if (this.count >= this.capacity)  {
       this._extendArray();
     }
@@ -60,7 +65,20 @@ class PointCollection extends Element {
     // for interactivity... So, might as well implement this stuff. Remember anything
     // about premature optimization?
     // throw new Error('Cannot extend array at the moment :(')
-
+    const newCapacity = this.capacity * 2;
+    console.log(`Extending array. New capacity: ${newCapacity}`);
+    
+    const newBuffer = new Float32Array(newCapacity * ITEMS_PER_POINT);
+    console.log('Created new buffer for points.');
+    
+    newBuffer.set(this.pointsBuffer); // copy old data
+    console.log('Copied old data to the new buffer.');
+    
+    this.pointsBuffer = newBuffer;
+    console.log('Updated pointsBuffer to the new buffer.');
+    
+    this.capacity = newCapacity;
+    console.log(`Capacity updated to: ${this.capacity}`);
   }
 }
 
