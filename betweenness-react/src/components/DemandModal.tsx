@@ -38,7 +38,7 @@ export function NodeRateModal() {
       dispatch(setRows(syncedRows));
     }
   }, [openModal, points, dispatch]);
-  console.log("points", points);
+  console.log("Rows in NodeRateModal:", rows);
   return (
     <>
       <Modal show={openModal} onClose={() => dispatch(setOpenModal(false))}>
