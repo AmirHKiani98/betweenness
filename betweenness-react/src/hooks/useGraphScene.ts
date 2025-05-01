@@ -149,24 +149,26 @@ export function useGraphScene() {
             });
             const lines = new LineCollection(graph.getLinksCount());
             scene.on('point-click', (point: { id: string; p: PointAccessor }) => {
+
                 if(!isDrawingNodeRef.current && !isRemovingNodeRef.current) {
                     selectNode(point.p);
                     scene.renderFrame();
                 }
+
                 else if(isRemovingNodeRef.current) {
                     const links = graph.getLinks(point.id);
-                    if (links) {
-                        links.forEach((link) => {
-                            console.log("link1", link.data.id);
-                            console.log("link2", link);
-                            lines.remove(link.data.id);
+                    if (links && links.length) {
+                        const linksCopy = [...links]; // Clone the array before mutating
+                        linksCopy.forEach((link) => {
+                            lines.remove(link.data.id);  // Assuming this works correctly
                             graph.removeLink(link);
-                        })
+                        });
                     }
                     graph.removeNode(point.id);
                     points.remove(point.p);
                     scene.renderFrame();
                 }
+
             });
             
             scene.on('line-click', (line) => {

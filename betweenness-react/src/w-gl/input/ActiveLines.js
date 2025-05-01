@@ -64,7 +64,6 @@ class ActiveLines extends Element {
       dy += child.transform.dy;
       if (child.type === 'WireCollection' || child.type === 'LineCollection') {
         child.allAccessors.forEach(l => {
-            console.log(l);
           const from = { x: l.from.x + dx, y: l.from.y + dy };
           const to = { x: l.to.x + dx, y: l.to.y + dy };
           lines.push({ from, to, id: l.id, l });
