@@ -39,8 +39,11 @@ export const flowSlice = createSlice({
     removeRow(state, action: PayloadAction<number>) {
       state.rows.splice(action.payload, 1);
     },
+    setRows: (state, action) => {
+      state.rows = action.payload;
+    }
   },
 });
 
-export const { setOpenModal, updateRow, addRow, removeRow } = flowSlice.actions;
+export const { setOpenModal, updateRow, addRow, removeRow, setRows } = flowSlice.actions;
 export default flowSlice.reducer;

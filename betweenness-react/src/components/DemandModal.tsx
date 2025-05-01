@@ -12,22 +12,35 @@ import {
   updateRow,
   addRow,
   removeRow,
+  setRows,
 } from "../store/flowSlice";
 import { RootState } from "../store/store";
-type RowData = {
-    node: string; // or number if you enforce IDs
-    start: number;
-    end: number;
-    rate: number;
-  };
+import { useEffect } from "react";
+
 export function NodeRateModal() {
   const dispatch = useDispatch();
   const openModal = useSelector((state: RootState) => state.flow.openModal);
   const rows = useSelector((state: RootState) => state.flow.rows);
+  const points = useSelector((state: RootState) => state.graph.allPoints); // <- get points from redux
 
+  // Populate rows from points if opening modal and no rows exist
+  useEffect(() => {
+    if (openModal && points.length > 0) {
+      const syncedRows = points.map((p) => {
+        const existing = rows.find((r) => r.node === p.id.toString());
+        return existing ?? {
+          node: p.id,
+          start: 0,
+          end: 900,
+          rate: 1000,
+        };
+      });
+      dispatch(setRows(syncedRows));
+    }
+  }, [openModal, points, dispatch]);
+  console.log("points", points);
   return (
     <>
-
       <Modal show={openModal} onClose={() => dispatch(setOpenModal(false))}>
         <ModalBody>
           <table className="w-full text-sm text-left text-gray-700">
@@ -50,11 +63,11 @@ export function NodeRateModal() {
                         className="w-full border px-2 py-1 rounded"
                         value={row[key]}
                         onChange={(e) => {
-                            const rawValue = e.target.value;
-                            const parsedValue = ["start", "end", "rate"].includes(key)
-                              ? Number(rawValue)
-                              : rawValue;
-                            dispatch(updateRow({ index: i, key, value: parsedValue }));
+                          const rawValue = e.target.value;
+                          const parsedValue = ["start", "end", "rate"].includes(key)
+                            ? Number(rawValue)
+                            : rawValue;
+                          dispatch(updateRow({ index: i, key, value: parsedValue }));
                         }}
                       />
                     </td>

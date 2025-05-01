@@ -8,8 +8,9 @@ import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 import {randomString} from "../services/utilities";
 import { RootState } from '../store/store';
-import { setX, setY, setLineIdDisplay} from '../store/graphSlice';
+import { setX, setY, setLineIdDisplay, addPoint, removePoint} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
+
 function updateSVGElements(svgConntainer: SVGContainer) {
     // Example usage: Log the SVG container or perform operations on it
 }
@@ -33,6 +34,7 @@ export function useGraphScene() {
     const isRemovingNodeRef = useRef(isRemovingNode);
     const isDrawingLine = useSelector((state: RootState) => (state.graph as { isDrawingLine: boolean }).isDrawingLine);
     const isDrawingLineRef = useRef(isDrawingLine);
+    const allPoints = useSelector((state: RootState) => (state.graph as { allPoints: Array<{ id: string; x: number; y: number }> }).allPoints);
     
     const isRemovingLine = useSelector((state: RootState) => (state.graph as { isRemovingLine: boolean }).isRemovingLine);
     const isRemovingLineRef = useRef(isRemovingLine);
@@ -95,6 +97,9 @@ export function useGraphScene() {
             graph.addLink("A", "B", { id: "link-AB" });
             graph.addLink("B", "C", { id: "link-BC" });
             graph.addLink("C", "A", { id: "link-CA" });
+            dispatch(addPoint({ id: "A", x: -5, y: 5 }));
+            dispatch(addPoint({ id: "B", x: 5, y: 5 }));
+            dispatch(addPoint({ id: "C", x: 0, y: -5 }));
             
             // Wait for the dropdown elements to exist before updating them
         };
@@ -158,6 +163,7 @@ export function useGraphScene() {
                   const { sceneX, sceneY } = pointData;
                   const id = randomString(10);
                   const newNode = graph.addNode(id, { id, x: sceneX, y: sceneY });
+                  dispatch(addPoint({ id, x: sceneX, y: sceneY }));
                   newNode.data.color = NODE_DEFAULT_COLOR;
                   if (newNode.data) {
                     points.add(newNode.data);
@@ -203,6 +209,7 @@ export function useGraphScene() {
                         });
                     }
                     graph.removeNode(point.id);
+                    dispatch(removePoint(point.id));
                     points.remove(point.p);
                     scene.renderFrame();
                 }
