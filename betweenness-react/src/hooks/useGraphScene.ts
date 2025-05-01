@@ -25,6 +25,8 @@ export function useGraphScene() {
     const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
     const isDrawingNode = useSelector((state: RootState) => (state.graph as { isDrawingNode: boolean }).isDrawingNode);
     const isDrawingNodeRef = useRef(isDrawingNode);
+    const isRemovingNode = useSelector((state: RootState) => (state.graph as { isRemovingNode: boolean }).isRemovingNode);
+    const isRemovingNodeRef = useRef(isRemovingNode);
     // const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
     const selectedNodeRef = useRef<PointAccessor | null>(null);
 
@@ -47,7 +49,9 @@ export function useGraphScene() {
 
     useEffect(() => {
         isDrawingNodeRef.current = isDrawingNode; // ✅ just update ref
-      }, [isDrawingNode]);
+        isRemovingNodeRef.current = isRemovingNode;
+        
+      }, [isDrawingNode, isRemovingNode]);
       
     useEffect(() => {
         

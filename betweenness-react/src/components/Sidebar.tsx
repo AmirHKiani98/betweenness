@@ -2,9 +2,9 @@ import "../App.css";
 import { motion } from "motion/react";
 import {TooltipWrapper} from "./TooltipWrapper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShareNodes, faPencil, faCircleDot } from '@fortawesome/free-solid-svg-icons'
+import { faShareNodes, faPencil, faCircleDot, faSquareXmark } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleDrawingNode, toggleDrawingLink } from '../store/graphSlice';
+import { toggleDrawingNode, toggleDrawingLink, toggleRemovingNode } from '../store/graphSlice';
 import type { RootState } from '../store/store';
 
 
@@ -14,6 +14,7 @@ export function Sidebar() {
     const dispatch = useDispatch();
     const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
     const isDrawingLink = useSelector((state: RootState) => state.graph.isDrawingLink);
+    const isRemvoingNode = useSelector((state: RootState) => state.graph.isRemovingNode);
     const x = useSelector((state: RootState) => state.graph.x);
     const y = useSelector((state: RootState) => state.graph.y);
 
@@ -51,6 +52,19 @@ export function Sidebar() {
                         onClick={() => dispatch(toggleDrawingNode())}
                     >
                         <FontAwesomeIcon icon={faPencil} />
+                        <FontAwesomeIcon icon={faCircleDot} />
+
+                    </motion.button>
+                </TooltipWrapper>
+
+                <TooltipWrapper tooltipText="Activate removing node">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`!w-20 !flex gap-2 justify-center ${isRemvoingNode ? "!bg-main-800 !text-white" : "!bg-gray-300 !text-gray-700"}`}
+                        onClick={() => dispatch(toggleRemovingNode())}
+                    >
+                        <FontAwesomeIcon icon={faSquareXmark} />
                         <FontAwesomeIcon icon={faCircleDot} />
 
                     </motion.button>
