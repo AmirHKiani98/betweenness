@@ -6,6 +6,9 @@ export type RootState = {
       isRemovingNode: boolean;
       isRemovingLine: boolean;
       hoveredLineId: string;
+      timeInterval: number;
+      jamDensity: number;
+      duration: number;
       allPoints: Array<{ id: string; x: number; y: number }>;
       allLinks: Array<{ id: string; from: string; to: string }>;
       x: number | null;
@@ -18,7 +21,10 @@ interface GraphState {
   isRemovingNode: boolean;
   isRemovingLine: boolean;
   hoveredLineId: string;
+  jamDensity: number;
+  duration: number;
   allPoints: Array<{ id: string; x: number; y: number }>;
+  timeInterval: number;
   allLinks: Array<{ id: string; from: string; to: string }>;
   selectedNode: string | null; // or NodeData if you prefer full object,
   x: number | null;
@@ -30,6 +36,9 @@ const initialState: GraphState = {
   isDrawingLine: false,
   isRemovingNode: false,
   isRemovingLine: false,
+  timeInterval: 10,
+  jamDensity:150,
+  duration: 7200,
   hoveredLineId: '',
   allPoints: [],
   allLinks: [],
@@ -115,11 +124,21 @@ const graphSlice = createSlice({
     removeLink: (state, action) => {
       const linkId = action.payload;
       state.allLinks = state.allLinks.filter(l => l.id !== linkId);
+    },
+    setTimeInterval: (state, action) => {
+      state.timeInterval = action.payload;
+    },
+    setJamDensity: (state, action) => {
+      state.jamDensity = action.payload;
+    },
+    setDuration: (state, action) => {
+      state.duration = action.payload;
     }
+
 
     
   },
 });
 
-export const { toggleDrawingNode, setDrawingNode, toggleRemovingNode, setRemovingNode, toggleDrawingLine, setDrawingLine, toggleRemovingLine, setRemovingLine, clearSelectedNode, setX, setY, setLineIdDisplay,  addPoint, removePoint, addLink, removeLink} = graphSlice.actions;
+export const { toggleDrawingNode, setDrawingNode, toggleRemovingNode, setRemovingNode, toggleDrawingLine, setDrawingLine, toggleRemovingLine, setRemovingLine, clearSelectedNode, setX, setY, setLineIdDisplay,  addPoint, removePoint, addLink, removeLink, setTimeInterval, setJamDensity, setDuration} = graphSlice.actions;
 export default graphSlice.reducer;

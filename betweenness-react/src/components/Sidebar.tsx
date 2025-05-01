@@ -4,7 +4,7 @@ import {TooltipWrapper} from "./TooltipWrapper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh, faTruckField, faBezierCurve} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine } from '../store/graphSlice';
+import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine, setTimeInterval, setJamDensity, setDuration } from '../store/graphSlice';
 import type { RootState } from '../store/store';
 import { Button } from "flowbite-react";
 import { NumberInput } from '../components/NumberInput.tsx';
@@ -27,11 +27,9 @@ export function Sidebar() {
     const x = useSelector((state: RootState) => state.graph.x);
     const y = useSelector((state: RootState) => state.graph.y);
     const hoveredLineId = useSelector((state: RootState) => state.graph.hoveredLineId);
-    
-    function handleDownload() {
-
-    }
-    
+    const timeInterval = useSelector((state: RootState) => state.graph.timeInterval);
+    const jamDensity = useSelector((state: RootState) => state.graph.jamDensity);
+    const duration = useSelector((state: RootState) => state.graph.duration);
     // console.log(isRemovingLine);
     return (
         <div className="p-4 bg-gray-200 h-full w-80 overflow-y-auto fixed right-0 top-0 z-50">
@@ -149,41 +147,88 @@ export function Sidebar() {
                 </div>
             </div>
             <div className="flex mt-4 justify-between items-center">
-            <TooltipWrapper tooltipText="Demand modal" tooltipPosition={"left"}>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`!w-14 !flex gap-2 justify-center`}
-                            onClick={() => dispatch(setOpenFlowModal(true))} // Reset the graph.
-                        >
-                            <FontAwesomeIcon icon={faTruckField} />
+                <TooltipWrapper tooltipText="Demand modal" tooltipPosition={"left"}>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`!w-14 !flex gap-2 justify-center`}
+                                onClick={() => dispatch(setOpenFlowModal(true))} // Reset the graph.
+                            >
+                                <FontAwesomeIcon icon={faTruckField} />
 
-                        </motion.button>
-            </TooltipWrapper>
+                            </motion.button>
+                </TooltipWrapper>
 
-            <TooltipWrapper tooltipText="Link modal" tooltipPosition={"bottom"}>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`!w-14 !flex gap-2 justify-center`}
-                            onClick={() => dispatch(setOpenLinkModal(true))} // Reset the graph.
-                        >
-                            <FontAwesomeIcon icon={faBezierCurve} />
+                <TooltipWrapper tooltipText="Link modal" tooltipPosition={"bottom"}>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`!w-14 !flex gap-2 justify-center`}
+                                onClick={() => dispatch(setOpenLinkModal(true))} // Reset the graph.
+                            >
+                                <FontAwesomeIcon icon={faBezierCurve} />
 
-                        </motion.button>
-            </TooltipWrapper>
-            <TooltipWrapper tooltipText="Node modal" tooltipPosition={"left"}>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`!w-14 !flex gap-2 justify-center`}
-                            onClick={() => dispatch(setOpenNodeMetaModal(true))} // Reset the graph.
-                        >
-                            <FontAwesomeIcon icon={faShareNodes} />
+                            </motion.button>
+                </TooltipWrapper>
+                <TooltipWrapper tooltipText="Node modal" tooltipPosition={"left"}>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`!w-14 !flex gap-2 justify-center`}
+                                onClick={() => dispatch(setOpenNodeMetaModal(true))} // Reset the graph.
+                            >
+                                <FontAwesomeIcon icon={faShareNodes} />
 
-                        </motion.button>
-            </TooltipWrapper>
+                            </motion.button>
+                </TooltipWrapper>
+            </div>
+            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
+                <div className="flex flex-row justify-between items-center w-full">
+                    <p>Time interval</p>
+                    <NumberInput
+                        value={timeInterval}
+                        onChange={(e) => {
+                            dispatch(setTimeInterval(Number(e.target.value)));
+                          }}
+                    
+                        min={1}
+                        max={1000}
+                        step={1}
+                        className="!w-24"
+                    />
+                </div>
+            </div>
 
+            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
+                <div className="flex flex-row justify-between items-center w-full">
+                    <p>Jam Density</p>
+                    <NumberInput
+                        value={jamDensity}
+                        onChange={(e) => {
+                            dispatch(setJamDensity(Number(e.target.value)));
+                          }}
+                        
+                        min={1}
+                        max={1000}
+                        step={1}
+                        className="!w-24"
+                    />
+                </div>
+            </div>
+            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
+                <div className="flex flex-row justify-between items-center w-full">
+                    <p>Jam Density</p>
+                    <NumberInput
+                        value={duration}
+                        onChange={(e) => {
+                            dispatch(setDuration(Number(e.target.value)));
+                          }}
+                        min={1}
+                        max={9000}
+                        step={1}
+                        className="!w-24"
+                    />
+                </div>
             </div>
         </div>
     );
