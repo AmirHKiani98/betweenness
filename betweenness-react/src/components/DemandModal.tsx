@@ -16,13 +16,17 @@ import {
 } from "../store/flowSlice";
 import { RootState } from "../store/store";
 import { useEffect } from "react";
+import { convertToCSV, downloadCSV } from "../services/utilities";
 
 export function NodeRateModal() {
   const dispatch = useDispatch();
   const openModal = useSelector((state: RootState) => state.flow.openModal);
   const rows = useSelector((state: RootState) => state.flow.rows);
   const points = useSelector((state: RootState) => state.graph.allPoints); // <- get points from redux
-
+  const handleDownload = () => {
+    const csv = convertToCSV(rows);
+    downloadCSV(csv, "demand.txt");
+  };
   // Populate rows from points if opening modal and no rows exist
   useEffect(() => {
     if (openModal && points.length > 0) {
@@ -38,7 +42,8 @@ export function NodeRateModal() {
       dispatch(setRows(syncedRows));
     }
   }, [openModal, points, dispatch]);
-  console.log("Rows in NodeRateModal:", rows);
+  
+  
   return (
     <>
       <Modal show={openModal} onClose={() => dispatch(setOpenModal(false))}>
@@ -93,7 +98,11 @@ export function NodeRateModal() {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={() => dispatch(setOpenModal(false))}>Save</Button>
+          <Button onClick={() => {
+            dispatch(setOpenModal(false));
+            handleDownload();
+        }
+        }>Save</Button>
           <Button color="gray" onClick={() => dispatch(setOpenModal(false))}>
             Cancel
           </Button>

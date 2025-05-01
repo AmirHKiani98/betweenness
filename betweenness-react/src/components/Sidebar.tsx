@@ -13,6 +13,9 @@ import { setOpenModal as setOpenFlowModal } from "../store/flowSlice";
 import { setOpenLinkModal as setOpenLinkModal } from "../store/linkSlice";
 import { setOpenNodeMetaModal as setOpenNodeMetaModal } from "../store/nodeMetaSlice";
 
+import { convertToCSV, downloadCSV} from "../store/nodeMetaSlice";
+
+
 
 
 export function Sidebar() {
@@ -24,6 +27,11 @@ export function Sidebar() {
     const x = useSelector((state: RootState) => state.graph.x);
     const y = useSelector((state: RootState) => state.graph.y);
     const hoveredLineId = useSelector((state: RootState) => state.graph.hoveredLineId);
+    
+    function handleDownload() {
+
+    }
+    
     // console.log(isRemovingLine);
     return (
         <div className="p-4 bg-gray-200 h-full w-80 overflow-y-auto fixed right-0 top-0 z-50">

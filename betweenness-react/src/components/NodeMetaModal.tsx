@@ -14,12 +14,17 @@ import {
   } from "../store/nodeMetaSlice";
   import { RootState } from "../store/store";
   import { useEffect } from "react";
-  
+  import { convertToCSV, downloadCSV } from "../services/utilities";
+
   export function NodeMetaModal() {
     const dispatch = useDispatch();
     const openModal = useSelector((state: RootState) => state.nodeMeta.openModal);
     const rows = useSelector((state: RootState) => state.nodeMeta.rows);
     const allPoints = useSelector((state: RootState) => state.graph.allPoints);
+    const handleDownload = () => {
+        const csv = convertToCSV(rows);
+        downloadCSV(csv, "nodes.txt");
+      };
     // Prepopulate if needed
     useEffect(() => {
         if (openModal && allPoints.length > 0) {
@@ -83,7 +88,10 @@ import {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button onClick={() => dispatch(setOpenNodeMetaModal(false))}>Save</Button>
+          <Button onClick={() => {
+            dispatch(setOpenNodeMetaModal(false))
+            handleDownload();
+            }}>Download</Button>
           <Button color="gray" onClick={() => dispatch(setOpenNodeMetaModal(false))}>
             Cancel
           </Button>

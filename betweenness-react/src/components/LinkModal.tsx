@@ -16,13 +16,18 @@ import {
 } from "../store/linkSlice"; // you need to define this
 import { RootState } from "../store/store";
 import { useEffect } from "react";
+import { convertToCSV, downloadCSV } from "../services/utilities";
+
 
 export function LinkModal() {
   const dispatch = useDispatch();
   const openModal = useSelector((state: RootState) => state.links.openModal);
   const linkRows = useSelector((state: RootState) => state.links.rows);
   const allLinks = useSelector((state: RootState) => state.graph.allLinks);
-
+  const handleDownload = () => {
+    const csv = convertToCSV(linkRows);
+    downloadCSV(csv, "links.txt");
+  };
   useEffect(() => {
     if (openModal && allLinks.length > 0) {
       const synced = allLinks.map((l) => {
@@ -98,7 +103,11 @@ export function LinkModal() {
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button onClick={() => dispatch(setOpenLinkModal(false))}>Save</Button>
+        <Button onClick={() =>
+            {
+                dispatch(setOpenLinkModal(false));
+                handleDownload();
+            }}>Save</Button>
         <Button color="gray" onClick={() => dispatch(setOpenLinkModal(false))}>
           Cancel
         </Button>
