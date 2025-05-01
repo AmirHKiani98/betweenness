@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import graphReducer from './graphSlice';
 import flowReducer from './flowSlice';
+import linkReducer from './linkSlice';
 
 export const store = configureStore({
   reducer: {
     graph: graphReducer,
-    flow: flowReducer
+    flow: flowReducer,
+    links: linkReducer
   },
 });
 

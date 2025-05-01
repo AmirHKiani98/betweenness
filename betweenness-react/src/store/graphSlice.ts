@@ -7,6 +7,7 @@ export type RootState = {
       isRemovingLine: boolean;
       hoveredLineId: string;
       allPoints: Array<{ id: string; x: number; y: number }>;
+      allLinks: Array<{ id: string; from: string; to: string }>;
       x: number | null;
       y: number | null;
   };
@@ -18,6 +19,7 @@ interface GraphState {
   isRemovingLine: boolean;
   hoveredLineId: string;
   allPoints: Array<{ id: string; x: number; y: number }>;
+  allLinks: Array<{ id: string; from: string; to: string }>;
   selectedNode: string | null; // or NodeData if you prefer full object,
   x: number | null;
   y: number | null;
@@ -30,6 +32,7 @@ const initialState: GraphState = {
   isRemovingLine: false,
   hoveredLineId: '',
   allPoints: [],
+  allLinks: [],
   selectedNode: null,
   x: null,
   y: null
@@ -105,10 +108,18 @@ const graphSlice = createSlice({
       const pointId = action.payload;
       state.allPoints = state.allPoints.filter(p => p.id !== pointId);
     },
+    addLink: (state, action) => {
+      const link = action.payload;
+      state.allLinks.push(link);
+    },
+    removeLink: (state, action) => {
+      const linkId = action.payload;
+      state.allLinks = state.allLinks.filter(l => l.id !== linkId);
+    }
 
     
   },
 });
 
-export const { toggleDrawingNode, setDrawingNode, toggleRemovingNode, setRemovingNode, toggleDrawingLine, setDrawingLine, toggleRemovingLine, setRemovingLine, clearSelectedNode, setX, setY, setLineIdDisplay,  addPoint, removePoint} = graphSlice.actions;
+export const { toggleDrawingNode, setDrawingNode, toggleRemovingNode, setRemovingNode, toggleDrawingLine, setDrawingLine, toggleRemovingLine, setRemovingLine, clearSelectedNode, setX, setY, setLineIdDisplay,  addPoint, removePoint, addLink, removeLink} = graphSlice.actions;
 export default graphSlice.reducer;

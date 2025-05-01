@@ -9,7 +9,8 @@ import type { RootState } from '../store/store';
 import { Button } from "flowbite-react";
 import { NumberInput } from '../components/NumberInput.tsx';
 import {NodeRateModal} from './DemandModal.tsx';
-import { setOpenModal } from "../store/flowSlice";
+import { setOpenModal as setOpenFlowModal } from "../store/flowSlice";
+import { setOpenLinkModal as setOpenLinkModal } from "../store/linkSlice";
 
 
 
@@ -150,12 +151,25 @@ export function Sidebar() {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className={`!w-14 !flex gap-2 justify-center`}
-                            onClick={() => dispatch(setOpenModal(true))} // Reset the graph.
+                            onClick={() => dispatch(setOpenFlowModal(true))} // Reset the graph.
                         >
                             <FontAwesomeIcon icon={faTruckField} />
 
                         </motion.button>
-                </TooltipWrapper>
+            </TooltipWrapper>
+
+            <TooltipWrapper tooltipText="Link modal" tooltipPosition={"left"}>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`!w-14 !flex gap-2 justify-center`}
+                            onClick={() => dispatch(setOpenLinkModal(true))} // Reset the graph.
+                        >
+                            <FontAwesomeIcon icon={faTruckField} />
+
+                        </motion.button>
+            </TooltipWrapper>
+
             </div>
         </div>
     );

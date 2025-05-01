@@ -1,6 +1,7 @@
 import { GraphCanvas } from "./components/GraphCanvas";
 import { Sidebar } from "./components/Sidebar";
 import { NodeRateModal } from './components/DemandModal';
+import { LinkModal } from "./components/LinkModal";
 import {useSelector } from "react-redux";
 import { RootState } from "./store/store";
 
@@ -11,7 +12,8 @@ function App() {
         <div className="flex w-full h-full">
             <Sidebar />
             <GraphCanvas />
-            <NodeRateModal  points={allPoints}/>
+            <NodeRateModal/>
+            <LinkModal />
         </div>
     );
 }

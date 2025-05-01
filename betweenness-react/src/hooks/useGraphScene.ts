@@ -8,7 +8,7 @@ import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 import {randomString} from "../services/utilities";
 import { RootState } from '../store/store';
-import { setX, setY, setLineIdDisplay, addPoint, removePoint} from '../store/graphSlice';
+import { setX, setY, setLineIdDisplay, addPoint, removePoint, addLink, removeLink} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 function updateSVGElements(svgConntainer: SVGContainer) {
@@ -92,14 +92,16 @@ export function useGraphScene() {
             graph.addNode("A", { id: "A", x: -5, y: 5 });
             graph.addNode("B", { id: "B", x: 5, y: 5 });
             graph.addNode("C", { id: "C", x: 0, y: -5 });
-
+            dispatch(addPoint({ id: "A", x: -5, y: 5 }));
+            dispatch(addPoint({ id: "B", x: 5, y: 5 }));
+            dispatch(addPoint({ id: "C", x: 0, y: -5 }));
             // Add example links
             graph.addLink("A", "B", { id: "link-AB" });
             graph.addLink("B", "C", { id: "link-BC" });
             graph.addLink("C", "A", { id: "link-CA" });
-            dispatch(addPoint({ id: "A", x: -5, y: 5 }));
-            dispatch(addPoint({ id: "B", x: 5, y: 5 }));
-            dispatch(addPoint({ id: "C", x: 0, y: -5 }));
+            dispatch(addLink({ from: "A", to: "B", id: "link-AB" }));
+            dispatch(addLink({ from: "B", to: "C", id: "link-BC" }));
+            dispatch(addLink({ from: "C", to: "A", id: "link-CA" }));
             
             // Wait for the dropdown elements to exist before updating them
         };
@@ -191,6 +193,7 @@ export function useGraphScene() {
                             console.log("Adding line");
                             const linkId = randomString(10);
                             graph.addLink(selectedNode.id, point.id, { id: linkId });
+                            dispatch(addLink({ from: selectedNode.id, to: point.id, id: linkId }));
                             lines.add({ from: selectedNode, to: point.p, id: linkId });
                             scene.renderFrame();
                         }
@@ -206,6 +209,7 @@ export function useGraphScene() {
                         linksCopy.forEach((link) => {
                             lines.remove(link.data.id);  // Assuming this works correctly
                             graph.removeLink(link);
+                            dispatch(removeLink(link.data.id));
                         });
                     }
                     graph.removeNode(point.id);
@@ -230,6 +234,7 @@ export function useGraphScene() {
                     if (link) {
                         lines.remove(lineId);
                         graph.removeLink(link);
+                        dispatch(removeLink(lineId));
                         scene.renderFrame();
                     }
                 }
