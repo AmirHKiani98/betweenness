@@ -1,3 +1,4 @@
+// @ts-expect-error: TypeScript cannot validate the types from this JavaScript module
 import {Color} from "../w-gl/index.js";
 
 export interface NodeData {
