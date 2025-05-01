@@ -9,6 +9,8 @@ import { quadtree as createTree } from 'd3-quadtree';
  * only. More work needs to be done before I can recommend it to anyone.
  * (see TODOs in the file)
  */
+const DISTANCE_THRESHOLD = 1;
+const UPDATE_TIME_THRESHOLD = 10;
 class ActivePoints extends Element {
   static clickEventRegistered = false;
   constructor(scene) {
@@ -30,7 +32,7 @@ class ActivePoints extends Element {
   findUnderCursor(x, y) {
     if (!this.interactiveTree) return;
 
-    return this.interactiveTree.find(x, y, 10);
+    return this.interactiveTree.find(x, y, DISTANCE_THRESHOLD);
   }
 
   draw(gl, drawContext) {
@@ -41,7 +43,7 @@ class ActivePoints extends Element {
 
   updateInteractiveTree() {
     var now = new Date();
-    if (now - this.lastTreeUpdate < 500) return; 
+    if (now - this.lastTreeUpdate < UPDATE_TIME_THRESHOLD) return; // Amir TODO: What does it do?
 
     // TODO: This is such a waste of time! Instead of rebuilding tree on each
     // transform modification you should build tree once for each point collection
@@ -122,6 +124,8 @@ class ActivePoints extends Element {
 
       return { x, y };
   }
+
+  
 }
 
 export default ActivePoints;

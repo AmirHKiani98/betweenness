@@ -26,7 +26,7 @@ export function useGraphScene() {
     const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
     const isDrawingNodeRef = useRef(isDrawingNode);
     const dispatch = useDispatch();
-
+    
     useEffect(() => {
         isDrawingNodeRef.current = isDrawingNode; // ✅ just update ref
       }, [isDrawingNode]);
@@ -117,7 +117,16 @@ export function useGraphScene() {
                   }
                   scene.renderFrame();
                 }
-              });
+            });
+            scene.on('point-click', (point, eventData) => {
+                
+                console.log('Point entered:', point);
+                console.log('Cursor position:', eventData.x, eventData.y);
+              
+                // Example: Highlight the point
+                point.p.setColor(new Color(0, 1, 0, 1)); // Change the point's color to green
+                scene.renderFrame(); // Re-render the scene to apply the changes
+            });
             points.pointsAccessor.forEach(accessor => {
                 accessor.setColor(new Color(1, 0, 0, 1)); // red color
             });

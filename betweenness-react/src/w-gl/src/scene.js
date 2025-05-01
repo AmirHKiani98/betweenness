@@ -91,7 +91,7 @@ function makeScene(canvas, options) {
       startY = e.clientY;
       console.log('mousedown', startX, startY);
     });
-  
+    canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mousemove', (e) => {
       if (Math.abs(e.clientX - startX) > DRAG_THRESHOLD || Math.abs(e.clientY - startY) > DRAG_THRESHOLD) {
         isDragging = true;
