@@ -5,7 +5,7 @@ import Element from './Element';
 import onClap from './clap';
 
 export default makeScene;
-
+const DRAG_THRESHOLD = 10;
 function makeScene(canvas, options) {
   var width;
   var height;
@@ -82,10 +82,30 @@ function makeScene(canvas, options) {
   }
 
   function listenToEvents() {
-    canvas.addEventListener('mousemove', onMouseMove);
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    canvas.addEventListener('mousedown', (e) => {
+      isDragging = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      console.log('mousedown', startX, startY);
+    });
+  
+    canvas.addEventListener('mousemove', (e) => {
+      if (Math.abs(e.clientX - startX) > DRAG_THRESHOLD || Math.abs(e.clientY - startY) > DRAG_THRESHOLD) {
+        isDragging = true;
+      }
+    });
+  
+    canvas.addEventListener('mouseup', (e) => {
+      if (!isDragging) {
+        onMouseClick(e); // Treat as a click
+      }
+    });
     canvas.addEventListener('transform', onTransform);
 
-    disposeClick = onClap(canvas, onMouseClick, this);
+    // disposeClick = onClap(canvas, onMouseClick, this);
 
     window.addEventListener('resize', onResize, true);
   }
