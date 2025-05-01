@@ -31,7 +31,7 @@ export function useGraphScene() {
     const selectedNodeRef = useRef<PointAccessor | null>(null);
 
     const dispatch = useDispatch();
-    function clickOnNode(point: PointAccessor) {
+    function selectNode(point: PointAccessor) {
         const node = graph.getNode(point.id);
         if (node) {
             if (selectedNodeRef.current && selectedNodeRef.current.id === point.id) {
@@ -145,11 +145,16 @@ export function useGraphScene() {
                 dispatch(setX(parseFloat(pointData.sceneX.toFixed(2))));
                 dispatch(setY(parseFloat(pointData.sceneY.toFixed(2))));
             });
-            scene.on('point-click', (point, eventData) => {
-                if(!isDrawingNodeRef.current) {
-                    clickOnNode(point.p);
+            scene.on('point-click', (point: { id: string; p: PointAccessor }) => {
+                if(!isDrawingNodeRef.current && !isRemovingNodeRef.current) {
+                    selectNode(point.p);
                     scene.renderFrame();
-                };
+                }
+                else if(isRemovingNodeRef.current) {
+                    graph.removeNode(point.id);
+                    points.remove(point.p);
+                    scene.renderFrame();
+                }
             });
             
             scene.appendChild(points);

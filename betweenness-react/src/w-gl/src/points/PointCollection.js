@@ -58,6 +58,28 @@ class PointCollection extends Element {
     this.count += 1;
     return pointAccessor
   }
+  remove(identifier) { 
+    if (identifier === undefined) {
+      throw new Error('Identifier (PointAccessor or id) is required');
+    }
+
+    let index = -1;
+
+    if (typeof identifier === 'string') {
+      // Identifier is an id, find the corresponding PointAccessor
+      index = this.pointsAccessor.findIndex(accessor => accessor.id === identifier);
+    } else {
+      // Identifier is a PointAccessor
+      index = this.pointsAccessor.indexOf(identifier);
+    }
+
+    if (index === -1) {
+      throw new Error('PointAccessor or id not found');
+    }
+
+    this.pointsAccessor.splice(index, 1);
+    this.count -= 1;
+  }
 
   _extendArray() {
     // This is because we would have to track every created point accessor
@@ -65,7 +87,7 @@ class PointCollection extends Element {
     // for interactivity... So, might as well implement this stuff. Remember anything
     // about premature optimization?
     // throw new Error('Cannot extend array at the moment :(')
-    // Amir: I think this is a good idea. We should be able to extend the array now.
+    // Amir: I think this is a good idea. I'll tried the following to extend the array.
     const newCapacity = this.capacity * 2;    
     const newBuffer = new Float32Array(newCapacity * ITEMS_PER_POINT);    
     newBuffer.set(this.pointsBuffer); // copy old data    

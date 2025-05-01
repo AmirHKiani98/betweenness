@@ -24,12 +24,20 @@ const graphSlice = createSlice({
   reducers: {
     toggleDrawingNode: (state) => {
       state.isDrawingNode = !state.isDrawingNode;
+      if(state.isDrawingNode){
+        state.isRemovingNode = false;
+        state.isDrawingLink = false;
+      }
     },
     setDrawingNode: (state, action) => {
       state.isDrawingNode = action.payload;
     },
     toggleRemovingNode: (state) => {
       state.isRemovingNode = !state.isRemovingNode;
+      if(state.isRemovingNode){
+        state.isDrawingNode = false;
+        state.isDrawingLink = false;
+      }
     },
     setRemovingNode: (state, action) => {
       state.isRemovingNode = action.payload
@@ -37,6 +45,10 @@ const graphSlice = createSlice({
 
     toggleDrawingLink: (state) => {
       state.isDrawingLink = !state.isDrawingLink;
+      if(state.isDrawingLink){
+        state.isRemovingNode = false;
+        state.isDrawingNode = false;
+      }
     },
     setDrawingLink: (state, action) => {
       state.isDrawingLink = action.payload;
