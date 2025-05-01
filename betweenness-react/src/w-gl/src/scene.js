@@ -9,6 +9,7 @@ export default makeScene;
 function makeScene(canvas, options) {
   var width;
   var height;
+  var viewBox;
   var drawContext = { width: 0, height: 0 };
   var pixelRatio = window.devicePixelRatio;
   if (!options) options = {};
@@ -39,7 +40,8 @@ function makeScene(canvas, options) {
     renderFrame,
 
     getPixelRatio,
-    setPixelRatio
+    setPixelRatio,
+    getViewBox
   });
 
   var wglController = wglPanZoom(canvas, sceneRoot, api);
@@ -168,6 +170,7 @@ function makeScene(canvas, options) {
   }
 
   function setViewBox(rect) {
+    viewBox = { ...rect }; // Avoding reference
     panzoom.showRectangle(rect, {
       width: width,
       height: height
@@ -194,7 +197,11 @@ function makeScene(canvas, options) {
   function removeChild(child) {
     sceneRoot.removeChild(child)
   }
-
+  
+  function getViewBox() {
+    return viewBox;
+  }
+  
   function wglPanZoom(canvas, sceneRoot, scene) {
     var controller = {
       applyTransform(newT) {
@@ -228,4 +235,5 @@ function makeScene(canvas, options) {
         }
       }
   }
+
 }

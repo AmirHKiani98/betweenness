@@ -14,7 +14,7 @@ class PointCollection extends Element {
     this.pointsAccessor = [];
 
     this.capacity = capacity;
-    this.pointsBuffer = new Float32Array(capacity * ITEMS_PER_POINT);
+    this.pointsBuffer = new Float32Array(100000 * ITEMS_PER_POINT);
     this.count = 0;
     this._program = null;
     this.color = new Color(1, 1, 1, 1);
@@ -38,7 +38,6 @@ class PointCollection extends Element {
 
   add(point, data) {
     if (!point) throw new Error('Point is required');
-
     if (this.count >= this.capacity)  {
       this._extendArray();
     }
@@ -60,7 +59,8 @@ class PointCollection extends Element {
     // TODO: Whelp, a week older you thinks that we should be tracking the points
     // for interactivity... So, might as well implement this stuff. Remember anything
     // about premature optimization?
-    throw new Error('Cannot extend array at the moment :(')
+    // throw new Error('Cannot extend array at the moment :(')
+
   }
 }
 

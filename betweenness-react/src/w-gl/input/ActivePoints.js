@@ -10,16 +10,21 @@ import { quadtree as createTree } from 'd3-quadtree';
  * (see TODOs in the file)
  */
 class ActivePoints extends Element {
+  static clickEventRegistered = false;
   constructor(scene) {
     super();
-
+    
     this.scene = scene;
     this.prevHighlighted = null;
     this.lastTreeUpdate = new Date();
 
     // TODO: when removed from scene we need to release these events
+    if (!ActivePoints.clickEventRegistered) {
+      scene.on('click', this.onClick, this);
+      ActivePoints.clickEventRegistered = true;
+    }
     scene.on('mousemove', this.onMouseMove, this);
-    scene.on('click', this.onClick, this);
+    
   }
 
   findUnderCursor(x, y) {
@@ -89,16 +94,33 @@ class ActivePoints extends Element {
   }
 
   onClick(event) {
-    var e = event.originalEvent;
-    
     var res = this.findUnderCursor(event.sceneX, event.sceneY);
     if (res) {
       this.scene.fire('point-click', res, {
-        x: e.clientX,
-        y: e.clientY
+        x: event.originalEvent.clientX,
+        y: event.originalEvent.clientY
       });
     }
-    res = null;
+  }
+
+  toCanvasCoords(x, y, canvas, viewBox) {
+      const scaleX = canvas.width / (viewBox.right - viewBox.left);
+      const scaleY = canvas.height / (viewBox.bottom - viewBox.top);
+
+      const px = (x - viewBox.left) * scaleX;
+      const py = (y - viewBox.top) * scaleY;
+
+      return { x: px, y: py };
+  }
+
+  toLogicalCoords(px, py, canvas, viewBox) {
+      const scaleX = (viewBox.right - viewBox.left) / canvas.width;
+      const scaleY = (viewBox.bottom - viewBox.top) / canvas.height;
+
+      const x = px * scaleX + viewBox.left;
+      const y = py * scaleY + viewBox.top;
+
+      return { x, y };
   }
 }
 

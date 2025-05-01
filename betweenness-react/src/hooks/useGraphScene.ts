@@ -6,6 +6,7 @@ import {WireCollection, PointCollection, Color, scene as createScene, Scene, Act
 import createGraph, { Graph } from 'ngraph.graph';
 import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
+import {randomString} from "../services/utilities";
 
 function updateSVGElements(svgConntainer: SVGContainer) {
 
@@ -32,6 +33,9 @@ function modifyLinkSelect(graph: Graph<NodeData>) {
         console.error("Dropdown elements with IDs 'to-selection' or 'from-selection' not found");
     }
 }
+
+
+
 export function useGraphScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [scene, setScene] = useState<Scene | null>(null);
@@ -49,7 +53,7 @@ export function useGraphScene() {
         const initializeGraphWithExamples = () => {
             // Add example nodes
             graph.addNode("A", { id: "A", x: -5, y: 5 });
-            graph.addNode("B", { id: "B", x: 5, y: 10 });
+            graph.addNode("B", { id: "B", x: 5, y: 5 });
             graph.addNode("C", { id: "C", x: 0, y: -5 });
 
             // Add example links
@@ -105,10 +109,7 @@ export function useGraphScene() {
             scene.setPixelRatio(1);
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
             const activePoints = new ActivePoints(scene);
-            scene.on('point-click', (pointData, evt) => {
-                setSelectedNode(pointData);
-                console.log("Point clicked:", selectedNode);
-            });
+            
             scene.appendChild(activePoints);
             // Initialize the SVG container
             const svgElement = document.querySelector("svg .scene");
@@ -127,6 +128,21 @@ export function useGraphScene() {
                 if (node.data) {
                     points.add(node.data); // assuming node.data has {x, y}
                 }
+            });
+            scene.on('click', (pointData, evt) => {
+                const { sceneX, sceneY } = pointData;
+                console.log("Point clicked:", sceneX, sceneY);
+                const id = randomString(10);
+                console.log("Id", id);
+                const nodeId = graph.addNode(id, { id: id, x: sceneX, y: sceneY });
+                console.log("Node added:", nodeId);
+                points.add({ sceneX, sceneY });
+                graph.forEachNode(node => {
+                    if (node.data) {
+                        points.add(node.data); // assuming node.data has {x, y}
+                    }
+                });
+                scene.renderFrame();
             });
             points.pointsAccessor.forEach(accessor => {
                 accessor.setColor(new Color(1, 0, 0, 1)); // red color
@@ -155,6 +171,7 @@ export function useGraphScene() {
             // Attach resize logic
             setScene(scene);
             resizeCanvas(scene);
+            
             window.addEventListener("resize", () => resizeCanvas(scene));
             scene.renderFrame();
             console.log("WebGL scene initialized successfully");
