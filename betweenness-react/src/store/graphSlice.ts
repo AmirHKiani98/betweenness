@@ -2,16 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 export type RootState = {
   graph: {
       isDrawingNode: boolean;
-      isDrawingLink: boolean;
+      isDrawingLine: boolean;
       isRemovingNode: boolean;
+      isRemovingLine: boolean;
       x: number | null;
       y: number | null;
   };
 };
 interface GraphState {
   isDrawingNode: boolean;
-  isDrawingLink: boolean;
+  isDrawingLine: boolean;
   isRemovingNode: boolean;
+  isRemovingLine: boolean;
   selectedNode: string | null; // or NodeData if you prefer full object,
   x: number | null;
   y: number | null;
@@ -19,8 +21,9 @@ interface GraphState {
 
 const initialState: GraphState = {
   isDrawingNode: false,
-  isDrawingLink: false,
+  isDrawingLine: false,
   isRemovingNode: false,
+  isRemovingLine: false,
   selectedNode: null,
   x: null,
   y: null
@@ -34,7 +37,8 @@ const graphSlice = createSlice({
       state.isDrawingNode = !state.isDrawingNode;
       if(state.isDrawingNode){
         state.isRemovingNode = false;
-        state.isDrawingLink = false;
+        state.isDrawingLine = false;
+        state.isRemovingLine = false;
       }
     },
     setDrawingNode: (state, action) => {
@@ -44,25 +48,36 @@ const graphSlice = createSlice({
       state.isRemovingNode = !state.isRemovingNode;
       if(state.isRemovingNode){
         state.isDrawingNode = false;
-        state.isDrawingLink = false;
+        state.isDrawingLine = false;
+        state.isRemovingLine = false;
       }
     },
     setRemovingNode: (state, action) => {
       state.isRemovingNode = action.payload
     },
 
-    toggleDrawingLink: (state) => {
-      state.isDrawingLink = !state.isDrawingLink;
-      if(state.isDrawingLink){
+    toggleDrawingLine: (state) => {
+      state.isDrawingLine = !state.isDrawingLine;
+      if(state.isDrawingLine){
         state.isRemovingNode = false;
         state.isDrawingNode = false;
+        state.isRemovingLine = false;
       }
     },
-    setDrawingLink: (state, action) => {
-      state.isDrawingLink = action.payload;
+    setDrawingLine: (state, action) => {
+      state.isDrawingLine = action.payload;
     },
-    setSelectedNode: (state, action) => {
-      state.selectedNode = action.payload;
+    toggleRemovingLine: (state) => {
+      state.isRemovingLine = !state.isRemovingLine;
+      if(state.isRemovingLine){
+        state.isRemovingNode = false;
+        state.isDrawingNode = false;
+        state.isDrawingLine = false;
+      }
+    },
+
+    setRemovingLine: (state, action) => {
+      state.isRemovingLine = action.payload;
     },
     setX: (state, action) => {
       state.x = action.payload;
@@ -78,5 +93,5 @@ const graphSlice = createSlice({
   },
 });
 
-export const { toggleDrawingNode, setDrawingNode, toggleRemovingNode, setRemovingNode, toggleDrawingLink, setDrawingLink, setSelectedNode, clearSelectedNode, setX, setY } = graphSlice.actions;
+export const { toggleDrawingNode, setDrawingNode, toggleRemovingNode, setRemovingNode, toggleDrawingLine, setDrawingLine, toggleRemovingLine, setRemovingLine, clearSelectedNode, setX, setY } = graphSlice.actions;
 export default graphSlice.reducer;
