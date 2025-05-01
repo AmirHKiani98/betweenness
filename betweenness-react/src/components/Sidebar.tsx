@@ -1,8 +1,6 @@
-import { useState, useRef } from 'react';
+import "../App.css";
 import { motion } from "motion/react";
 import {TooltipWrapper} from "./TooltipWrapper";
-import { useFloating, offset, useHover, useInteractions, FloatingPortal, autoUpdate } from '@floating-ui/react';
-import "../App.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareNodes, faPencil, faCircleDot } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,11 +9,13 @@ import type { RootState } from '../store/store';
 
 
 
+
 export function Sidebar() {
     const dispatch = useDispatch();
     const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
     const isDrawingLink = useSelector((state: RootState) => state.graph.isDrawingLink);
-
+    const x = useSelector((state: RootState) => state.graph.x);
+    const y = useSelector((state: RootState) => state.graph.y);
 
     return (
         <div className="p-4 bg-gray-200 h-full w-80 overflow-y-auto fixed right-0 top-0 z-50">
@@ -70,7 +70,11 @@ export function Sidebar() {
                 </TooltipWrapper>
             </div>
             <h2 className="text-xl font-bold mt-4">Interactive Web</h2>
-            
+            <div className="flex justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-2xl [&>div>span]:text-main-600 [&>div]:item-center">
+                <div><p>x</p><span>{x ?? "----"}</span></div>
+                <div><p>y</p><span>{y ?? "----"}</span></div>
+
+            </div>
         </div>
     );
 }

@@ -7,7 +7,7 @@ import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 import {randomString} from "../services/utilities";
 import { RootState } from '../store/store';
-import { setSelectedNode, clearSelectedNode} from '../store/graphSlice';
+import { setX, setY} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
 function updateSVGElements(svgConntainer: SVGContainer) {
 
@@ -28,7 +28,7 @@ export function useGraphScene() {
     // const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
     const selectedNodeRef = useRef<PointAccessor | null>(null);
 
-    
+    const dispatch = useDispatch();
     function clickOnNode(point: PointAccessor) {
         const node = graph.getNode(point.id);
         if (node) {
@@ -136,6 +136,10 @@ export function useGraphScene() {
                   scene.renderFrame();
                   activePoints.updateInteractiveTree();
                 }
+            });
+            scene.on('mousemove', (pointData: { sceneX: number; sceneY: number }) => {
+                dispatch(setX(parseFloat(pointData.sceneX.toFixed(2))));
+                dispatch(setY(parseFloat(pointData.sceneY.toFixed(2))));
             });
             scene.on('point-click', (point, eventData) => {
                 if(!isDrawingNodeRef.current) {

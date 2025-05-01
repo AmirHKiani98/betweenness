@@ -94,7 +94,6 @@ function makeScene(canvas, options) {
       isDragging = false;
       startX = e.clientX;
       startY = e.clientY;
-      console.log('mousedown', startX, startY);
     });
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mousemove', (e) => {

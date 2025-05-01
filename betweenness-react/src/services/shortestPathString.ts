@@ -10,7 +10,3 @@ function shortestPathString(pathResult: { id: string }[]): string {
     }
     return resultString;
 }
-
-// Example usage to ensure the function is used
-const examplePath = [{ id: "A" }, { id: "B" }, { id: "C" }];
-console.log(shortestPathString(examplePath));
