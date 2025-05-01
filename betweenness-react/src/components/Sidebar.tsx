@@ -2,12 +2,14 @@ import "../App.css";
 import { motion } from "motion/react";
 import {TooltipWrapper} from "./TooltipWrapper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh, faTruckField } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine } from '../store/graphSlice';
 import type { RootState } from '../store/store';
 import { Button } from "flowbite-react";
 import { NumberInput } from '../components/NumberInput.tsx';
+import {NodeRateModal} from './DemandModal.tsx';
+import { setOpenModal } from "../store/flowSlice";
 
 
 
@@ -73,7 +75,7 @@ export function Sidebar() {
                     </motion.button>
                 </TooltipWrapper>
 
-                <TooltipWrapper tooltipText="Activate drawing lines" tooltipPosition={"left"}>
+                <TooltipWrapper tooltipText="Activate drawing lines" tooltipPosition={"bottom"}>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -141,6 +143,19 @@ export function Sidebar() {
                     <p>Capacity</p>
                     <NumberInput className="!w-1/3 !h-10 !text-main-600"></NumberInput>
                 </div>
+            </div>
+            <div className="flex mt-4 justify-between items-center">
+            <TooltipWrapper tooltipText="Demand modal" tooltipPosition={"left"}>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`!w-14 !flex gap-2 justify-center`}
+                            onClick={() => dispatch(setOpenModal(true))} // Reset the graph.
+                        >
+                            <FontAwesomeIcon icon={faTruckField} />
+
+                        </motion.button>
+                </TooltipWrapper>
             </div>
         </div>
     );
