@@ -4,9 +4,9 @@ import {TooltipWrapper} from "./TooltipWrapper";
 import { useFloating, offset, useHover, useInteractions, FloatingPortal, autoUpdate } from '@floating-ui/react';
 import "../App.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShareNodes, faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faShareNodes, faPencil, faCircleDot } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleDrawingNode } from '../store/graphSlice';
+import { toggleDrawingNode, toggleDrawingLink } from '../store/graphSlice';
 import type { RootState } from '../store/store';
 
 
@@ -14,7 +14,7 @@ import type { RootState } from '../store/store';
 export function Sidebar() {
     const dispatch = useDispatch();
     const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
-    
+    const isDrawingLink = useSelector((state: RootState) => state.graph.isDrawingLink);
 
 
     return (
@@ -47,21 +47,21 @@ export function Sidebar() {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className={`!w-20 !flex gap-2 justify-center ${isDrawingNode ? "!bg-blue-500 !text-white" : "!bg-gray-300 !text-gray-700"}`}
+                        className={`!w-20 !flex gap-2 justify-center ${isDrawingNode ? "!bg-main-800 !text-white" : "!bg-gray-300 !text-gray-700"}`}
                         onClick={() => dispatch(toggleDrawingNode())}
                     >
                         <FontAwesomeIcon icon={faPencil} />
-                        <FontAwesomeIcon icon={faShareNodes} />
+                        <FontAwesomeIcon icon={faCircleDot} />
 
                     </motion.button>
                 </TooltipWrapper>
 
-                <TooltipWrapper tooltipText="Activate drawing node" tooltipPosition={"left"}>
+                <TooltipWrapper tooltipText="Activate drawing lines" tooltipPosition={"left"}>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className={`!w-20 !flex gap-2 justify-center ${false ? "!bg-blue-500 !text-white" : "!bg-gray-300 !text-gray-700"}`}
-                        onClick={() => {}}
+                        className={`!w-20 !flex gap-2 justify-center ${isDrawingLink ? "!bg-main-800 !text-white" : "!bg-gray-300 !text-gray-700"}`}
+                        onClick={() => dispatch(toggleDrawingLink())}
                     >
                         <FontAwesomeIcon icon={faPencil} />
                         <FontAwesomeIcon icon={faShareNodes} />
