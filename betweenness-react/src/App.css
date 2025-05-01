@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@theme {
+    --color-main-50: oklch(0.97 0.03 240);
+    --color-main-100: oklch(0.94 0.05 240);
+    --color-main-200: oklch(0.87 0.07 240);
+    --color-main-300: oklch(0.78 0.09 240);
+    --color-main-400: oklch(0.67 0.10 240);
+    --color-main-500: oklch(0.72 0.11 178);
+    --color-main-600: oklch(0.60 0.12 240);
+    --color-main-700: oklch(0.50 0.13 240);
+    --color-main-800: oklch(0.40 0.14 240);
+    --color-main-900: oklch(0.30 0.15 240);
+}
+
+select, input[type="text"]{
+    @apply border border-gray-300 rounded py-2 px-3 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-main-500;
+}
+button{
+    @apply bg-main-500 text-white py-2 px-4 rounded w-full mb-2 hover:bg-main-600
+}
