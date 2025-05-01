@@ -64,14 +64,14 @@ export function useGraphScene() {
 
         const initializeGraphWithExamples = () => {
             // Add example nodes
-            // graph.addNode("A", { id: "A", x: -5, y: 5 });
-            // graph.addNode("B", { id: "B", x: 5, y: 5 });
-            // graph.addNode("C", { id: "C", x: 0, y: -5 });
+            graph.addNode("A", { id: "A", x: -5, y: 5 });
+            graph.addNode("B", { id: "B", x: 5, y: 5 });
+            graph.addNode("C", { id: "C", x: 0, y: -5 });
 
-            // // Add example links
-            // graph.addLink("A", "B", { id: "link-AB" });
-            // graph.addLink("B", "C", { id: "link-BC" });
-            // graph.addLink("C", "A", { id: "link-CA" });
+            // Add example links
+            graph.addLink("A", "B", { id: "link-AB" });
+            graph.addLink("B", "C", { id: "link-BC" });
+            graph.addLink("C", "A", { id: "link-CA" });
             
             // Wait for the dropdown elements to exist before updating them
         };
@@ -147,24 +147,36 @@ export function useGraphScene() {
                 dispatch(setX(parseFloat(pointData.sceneX.toFixed(2))));
                 dispatch(setY(parseFloat(pointData.sceneY.toFixed(2))));
             });
+            const lines = new LineCollection(graph.getLinksCount());
             scene.on('point-click', (point: { id: string; p: PointAccessor }) => {
                 if(!isDrawingNodeRef.current && !isRemovingNodeRef.current) {
                     selectNode(point.p);
                     scene.renderFrame();
                 }
                 else if(isRemovingNodeRef.current) {
+                    const links = graph.getLinks(point.id);
+                    if (links) {
+                        links.forEach((link) => {
+                            console.log("link1", link.data.id);
+                            console.log("link2", link);
+                            lines.remove(link.data.id);
+                            graph.removeLink(link);
+                        })
+                    }
                     graph.removeNode(point.id);
                     points.remove(point.p);
                     scene.renderFrame();
                 }
             });
+            
             scene.on('line-click', (line) => {
                 console.log(line);
             });
+
             scene.appendChild(points);
             
             // Create local Linecollection
-            const lines = new LineCollection(graph.getLinksCount());
+            
             graph.forEachLink((link) => {
                 const linkId = link.data.id;
                 const from = graph.getNode(link.fromId)?.data;

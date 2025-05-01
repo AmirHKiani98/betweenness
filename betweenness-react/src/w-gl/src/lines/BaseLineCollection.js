@@ -50,9 +50,40 @@ class BaseLineCollection extends Element {
     return ui;
   }
   
-  remove(identifier){
-
+  remove(identifier) {
+    if (!identifier) throw new Error('Identifier is required');
+  
+    const index = this.allAccessors.findIndex(a => a.id === identifier);
+    if (index === -1) throw new Error('Identifier not found');
+  
+    // Remove the accessor
+    this.allAccessors.splice(index, 1);
+    this.count -= 1;
+  
+    // Shift all subsequent lines in the buffer
+    const fromOffset = index * this.itemsPerLine;
+    const toOffset = (index + 1) * this.itemsPerLine;
+    const remaining = (this.count - index) * this.itemsPerLine;
+    
+    this.buffer.copyWithin(fromOffset, toOffset, toOffset + remaining);
+  
+    // Zero out trailing space
+    this.buffer.fill(0, this.count * this.itemsPerLine);
+  
+    // Update accessors (offsets must match new buffer layout)
+    // for (let i = index; i < this.count; i++) {
+    //   this.allAccessors[i].rebind(this.buffer, i * this.itemsPerLine);
+    // }
+  
+    if (this._program) {
+      this._program.updateBuffer?.(this.buffer);
+      this._program.updateCount?.(this.count);
+      this._program.updateAccessors?.(this.allAccessors);
+    }
+  
+    return this.allAccessors;
   }
+  
 
   dispose() {
     if (this._program) {
