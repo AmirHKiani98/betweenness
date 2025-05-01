@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import graphReducer from './graphSlice';
 import flowReducer from './flowSlice';
 import linkReducer from './linkSlice';
+import nodeMetaReducer from './nodeMetaSlice';
 
 export const store = configureStore({
   reducer: {
     graph: graphReducer,
     flow: flowReducer,
-    links: linkReducer
+    links: linkReducer,
+    nodeMeta: nodeMetaReducer
   },
 });
 

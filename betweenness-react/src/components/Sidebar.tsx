@@ -2,7 +2,7 @@ import "../App.css";
 import { motion } from "motion/react";
 import {TooltipWrapper} from "./TooltipWrapper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh, faTruckField } from '@fortawesome/free-solid-svg-icons'
+import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh, faTruckField, faBezierCurve} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine } from '../store/graphSlice';
 import type { RootState } from '../store/store';
@@ -11,6 +11,7 @@ import { NumberInput } from '../components/NumberInput.tsx';
 import {NodeRateModal} from './DemandModal.tsx';
 import { setOpenModal as setOpenFlowModal } from "../store/flowSlice";
 import { setOpenLinkModal as setOpenLinkModal } from "../store/linkSlice";
+import { setOpenNodeMetaModal as setOpenNodeMetaModal } from "../store/nodeMetaSlice";
 
 
 
@@ -139,12 +140,6 @@ export function Sidebar() {
                     <p>Mouse on line:</p><span>{hoveredLineId === "" ? "----" : hoveredLineId}</span>
                 </div>
             </div>
-            <div className="flex mt-4 justify-between items-center gap-5 [&>div]:flex [&>div]:flex-row [&>div]:gap-2 [&>div]:items-center [&>div]:justify-between [&>div>*]:text-lg [&>div>span]:text-main-600 [&>div]:item-center">
-                <div className="flex flex-row justify-between items-center">
-                    <p>Capacity</p>
-                    <NumberInput className="!w-1/3 !h-10 !text-main-600"></NumberInput>
-                </div>
-            </div>
             <div className="flex mt-4 justify-between items-center">
             <TooltipWrapper tooltipText="Demand modal" tooltipPosition={"left"}>
                         <motion.button
@@ -158,14 +153,25 @@ export function Sidebar() {
                         </motion.button>
             </TooltipWrapper>
 
-            <TooltipWrapper tooltipText="Link modal" tooltipPosition={"left"}>
+            <TooltipWrapper tooltipText="Link modal" tooltipPosition={"bottom"}>
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className={`!w-14 !flex gap-2 justify-center`}
                             onClick={() => dispatch(setOpenLinkModal(true))} // Reset the graph.
                         >
-                            <FontAwesomeIcon icon={faTruckField} />
+                            <FontAwesomeIcon icon={faBezierCurve} />
+
+                        </motion.button>
+            </TooltipWrapper>
+            <TooltipWrapper tooltipText="Node modal" tooltipPosition={"left"}>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`!w-14 !flex gap-2 justify-center`}
+                            onClick={() => dispatch(setOpenNodeMetaModal(true))} // Reset the graph.
+                        >
+                            <FontAwesomeIcon icon={faShareNodes} />
 
                         </motion.button>
             </TooltipWrapper>

@@ -43,8 +43,7 @@ export function LinkModal() {
   }, [openModal, allLinks, dispatch]);
 
   return (
-    <Modal show={openModal} onClose={() => dispatch(setOpenLinkModal(false))}>
-      <ModalHeader>Edit Links</ModalHeader>
+    <Modal show={openModal} onClose={() => dispatch(setOpenLinkModal(false))} size="5xl">
       <ModalBody>
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs uppercase text-gray-700">
