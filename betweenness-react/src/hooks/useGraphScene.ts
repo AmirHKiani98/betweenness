@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 // Import missing functions or define them
 // import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
 // @ts-expect-error: TypeScript cannot validate the types from this JavaScript module
-import {LineCollection, PointCollection, PointAccessor, Color, scene as createScene, Scene, ActivePoints, ActiveLines} from '../w-gl/index.js';
+import {LineCollection, PointCollection, PointAccessor, LineAccessor, Color, scene as createScene, Scene, ActivePoints, ActiveLines} from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
 import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
@@ -16,6 +16,9 @@ function updateSVGElements(svgConntainer: SVGContainer) {
 
 const SELECTED_NODE_COLOR = new Color(0, 1, 0.5, 1);
 const NODE_DEFAULT_COLOR = new Color(1,0,1,0);
+
+const SELECTED_LINE_COLOR = new Color(0, 0.5, 0.8,1);
+const LINE_DEFAULT_COLOR = new Color(0, 0.2, 0.2, 1);
 const BACKGROUND_COLOR = new Color(0, 0, 0, 0);
 
 export function useGraphScene() {
@@ -28,8 +31,11 @@ export function useGraphScene() {
     const isDrawingNodeRef = useRef(isDrawingNode);
     const isRemovingNode = useSelector((state: RootState) => (state.graph as { isRemovingNode: boolean }).isRemovingNode);
     const isRemovingNodeRef = useRef(isRemovingNode);
+    const isDrawingLine = useSelector((state: RootState) => (state.graph as { isDrawingLine: boolean }).isDrawingLine);
+    const isDrawingLineRef = useRef(isDrawingLine);
     // const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
     const selectedNodeRef = useRef<PointAccessor | null>(null);
+    const selectedLineRef = useRef<LineAccessor | null>(null);
 
     const dispatch = useDispatch();
     function selectNode(point: PointAccessor) {
@@ -48,11 +54,29 @@ export function useGraphScene() {
         }
     }
 
+    function selectLine(line){
+        console.log(line);
+        const lineId = line.id;
+        if(lineId){
+            
+            if (selectedLineRef.current && selectedLineRef.current.id === lineId) {
+                line.setColor(NODE_DEFAULT_COLOR);
+                selectedLineRef.current = null;
+            } else {
+                if (selectedLineRef.current) {
+                    selectedLineRef.current.setColor(NODE_DEFAULT_COLOR);
+                }
+                selectedLineRef.current = line;
+                line.setColor(SELECTED_NODE_COLOR);
+            }
+        }
+    }
+
     useEffect(() => {
         isDrawingNodeRef.current = isDrawingNode; // ✅ just update ref
         isRemovingNodeRef.current = isRemovingNode;
-        
-      }, [isDrawingNode, isRemovingNode]);
+        isDrawingLineRef.current = isDrawingLine;
+      }, [isDrawingNode, isRemovingNode, isDrawingLine]);
       
     useEffect(() => {
         
@@ -172,7 +196,10 @@ export function useGraphScene() {
             });
             
             scene.on('line-click', (line) => {
-                console.log(line);
+                if(!isDrawingLineRef.current){
+                    selectLine(line.l);
+                    scene.renderFrame();
+                }
             });
 
             scene.appendChild(points);

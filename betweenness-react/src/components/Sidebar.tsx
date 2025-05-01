@@ -14,6 +14,7 @@ export function Sidebar() {
     const dispatch = useDispatch();
     const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
     const isDrawingLine = useSelector((state: RootState) => state.graph.isDrawingLine);
+    console.log(isDrawingLine);
     const isRemvoingNode = useSelector((state: RootState) => state.graph.isRemovingNode);
     const isRemovingLine = useSelector((state: RootState) => state.graph.isRemovingLine);
     const x = useSelector((state: RootState) => state.graph.x);

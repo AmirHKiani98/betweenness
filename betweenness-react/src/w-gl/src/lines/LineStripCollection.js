@@ -11,7 +11,7 @@ export default class LineStripCollection extends Element {
     this.madeFullCircle = false;
 
     this.allowColors = allowColors;
-    this.itemsPerLine = allowColors ? 2 + 1 : 2;
+    this.itemsPerLine = allowColors ? 2 + 1 : 2; // Thanks for doing the math:)
     this.capacity = capacity;
     this.nextElementIndex = 1;
     this._program = null;
