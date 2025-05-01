@@ -2,11 +2,11 @@ import "../App.css";
 import { motion } from "motion/react";
 import {TooltipWrapper} from "./TooltipWrapper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShareNodes, faPencil, faCircleDot, faSquareXmark } from '@fortawesome/free-solid-svg-icons'
+import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine } from '../store/graphSlice';
 import type { RootState } from '../store/store';
-
+import { Button } from "flowbite-react";
 
 
 
@@ -94,6 +94,32 @@ export function Sidebar() {
                         <FontAwesomeIcon icon={faShareNodes} />
 
                     </motion.button>
+                </TooltipWrapper>
+            </div>
+            <div className="flex items-center justify-between">
+                <TooltipWrapper tooltipText="Download the graph" tooltipPosition={"top"}>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`!w-14 !flex gap-2 justify-center`}
+                            onClick={() => {}} // Download the graph.
+                        >
+                            <FontAwesomeIcon icon={faCloudDownload} />
+                            <FontAwesomeIcon icon={faSquareShareNodes} />
+
+                        </motion.button>
+                </TooltipWrapper>
+                <TooltipWrapper tooltipText="Reset the graph" tooltipPosition={"left"}>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`!w-14 !flex gap-2 justify-center`}
+                            onClick={() => {}} // Reset the graph.
+                        >
+                            <FontAwesomeIcon icon={faRefresh} />
+                            <FontAwesomeIcon icon={faSquareShareNodes} />
+
+                        </motion.button>
                 </TooltipWrapper>
             </div>
             <h2 className="text-xl font-bold mt-4">Interactive Web</h2>
