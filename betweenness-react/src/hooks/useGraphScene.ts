@@ -64,14 +64,14 @@ export function useGraphScene() {
 
         const initializeGraphWithExamples = () => {
             // Add example nodes
-            graph.addNode("A", { id: "A", x: -5, y: 5 });
-            graph.addNode("B", { id: "B", x: 5, y: 5 });
-            graph.addNode("C", { id: "C", x: 0, y: -5 });
+            // graph.addNode("A", { id: "A", x: -5, y: 5 });
+            // graph.addNode("B", { id: "B", x: 5, y: 5 });
+            // graph.addNode("C", { id: "C", x: 0, y: -5 });
 
-            // Add example links
-            graph.addLink("A", "B", { id: "link-AB" });
-            graph.addLink("B", "C", { id: "link-BC" });
-            graph.addLink("C", "A", { id: "link-CA" });
+            // // Add example links
+            // graph.addLink("A", "B", { id: "link-AB" });
+            // graph.addLink("B", "C", { id: "link-BC" });
+            // graph.addLink("C", "A", { id: "link-CA" });
             
             // Wait for the dropdown elements to exist before updating them
         };
