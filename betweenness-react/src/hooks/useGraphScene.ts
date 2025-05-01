@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import $ from 'jquery';
 // Import missing functions or define them
 import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
 import {WireCollection, PointCollection, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
@@ -13,8 +12,9 @@ function updateSVGElements(svgConntainer: SVGContainer) {
 
 }
 
-
-
+const SELECTED_NODE_COLOR = new Color(0, 0.5, 0.5, 1);
+const NODE_DEFAULT_COLOR = new Color(1,0,1,0);
+const BACKGROUND_COLOR = new Color(0, 0, 0, 0);
 
 export function useGraphScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,11 +22,30 @@ export function useGraphScene() {
     const [graph, setGraph] = useState<Graph<NodeData>>(createGraph<NodeData>());
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
     const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
-    const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
-    const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
+    const isDrawingNode = useSelector((state: RootState) => (state.graph as { isDrawingNode: boolean }).isDrawingNode);
     const isDrawingNodeRef = useRef(isDrawingNode);
+    const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
     const dispatch = useDispatch();
     
+    function clickOnNode(point){
+        console.log("Click on node");
+        const nodeId = point.id;
+        const node = graph.getNode(nodeId);
+        console.log("Node ID:", point);
+        if (node) {
+            // Check if the node is already selected
+            if (selectedNode === nodeId) {
+                // Deselect the node
+                dispatch({ type: 'graph/clearSelectedNode' });
+                point.setColor(NODE_DEFAULT_COLOR);
+            } else {
+                // Select the new node
+                dispatch({ type: 'graph/setSelectedNode', payload: nodeId });
+                point.setColor(SELECTED_NODE_COLOR);
+            }
+        }
+    }
+
     useEffect(() => {
         isDrawingNodeRef.current = isDrawingNode; // ✅ just update ref
       }, [isDrawingNode]);
@@ -82,7 +101,7 @@ export function useGraphScene() {
         try {
             console.log("Initializing WebGL scene...");
             const scene = createScene(canvasRef.current);
-            scene.setClearColor(1, 1, 1, 1);
+            scene.setClearColor(BACKGROUND_COLOR);
             scene.setPixelRatio(1);
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
             const activePoints = new ActivePoints(scene);
@@ -100,37 +119,40 @@ export function useGraphScene() {
             // Initialize graph nodes and links
             initializeGraphWithExamples();
             const points = new PointCollection(graph.getNodesCount());
-            points.color = new Color(1, 1, 1, 1);
+            points.color = NODE_DEFAULT_COLOR;
             graph.forEachNode(node => {
                 if (node.data) {
                     points.add(node.data); // assuming node.data has {x, y}
                 }
             });
-            scene.on('click', (pointData) => {
+            scene.on('click', (pointData: { sceneX: number; sceneY: number }) => {
                 if (isDrawingNodeRef.current) {
                   const { sceneX, sceneY } = pointData;
                   const id = randomString(10);
                   const newNode = graph.addNode(id, { id, x: sceneX, y: sceneY });
-                  console.log("Node added:", newNode);
+                  newNode.data.color = NODE_DEFAULT_COLOR;
                   if (newNode.data) {
                     points.add(newNode.data);
                   }
                   scene.renderFrame();
+                  activePoints.updateInteractiveTree();
                 }
             });
             scene.on('point-click', (point, eventData) => {
                 
-                console.log('Point entered:', point);
-                console.log('Cursor position:', eventData.x, eventData.y);
+                // console.log('Point entered:', point);
+                // console.log('Cursor position:', eventData.x, eventData.y);
               
-                // Example: Highlight the point
-                point.p.setColor(new Color(0, 1, 0, 1)); // Change the point's color to green
-                scene.renderFrame(); // Re-render the scene to apply the changes
+                // // Example: Highlight the point
+                // point.p.setColor(new Color(0, 1, 0, 1)); // Change the point's color to green
+                // scene.renderFrame(); // Re-render the scene to apply the changes
+                clickOnNode(point);
             });
+            
             points.pointsAccessor.forEach(accessor => {
                 accessor.setColor(new Color(1, 0, 0, 1)); // red color
             });
-            scene.setClearColor(0, 0, 0, 1);
+            // scene.setClearColor(0, 0, 0, 1);
             // points.size = 0.1; // Diameter of circle
             // points.color = new Color(0, 0, 0, 1); // Black color
             scene.appendChild(points);

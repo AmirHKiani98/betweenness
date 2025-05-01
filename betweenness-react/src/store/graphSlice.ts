@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 interface GraphState {
   isDrawingNode: boolean;
   isDrawingLink: boolean;
+  selectedNode: string | null; // or NodeData if you prefer full object
 }
 
 const initialState: GraphState = {
   isDrawingNode: false,
   isDrawingLink: false,
+  selectedNode: null,
 };
 
 const graphSlice = createSlice({
@@ -25,9 +27,15 @@ const graphSlice = createSlice({
     },
     setDrawingLink: (state, action) => {
       state.isDrawingLink = action.payload;
+    },
+    setSelectedNode: (state, action) => {
+      state.selectedNode = action.payload;
+    },
+    clearSelectedNode: (state) => {
+      state.selectedNode = null;
     }
   },
 });
 
-export const { toggleDrawingNode, setDrawingNode, toggleDrawingLink, setDrawingLink } = graphSlice.actions;
+export const { toggleDrawingNode, setDrawingNode, toggleDrawingLink, setDrawingLink, setSelectedNode, clearSelectedNode } = graphSlice.actions;
 export default graphSlice.reducer;

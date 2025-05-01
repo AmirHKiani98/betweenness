@@ -57,9 +57,11 @@ class ActivePoints extends Element {
       dx += child.transform.dx;
       dy += child.transform.dy;
       if (child.type === 'PointCollection') {
+        console.log(child.pointsAccessor);
         var points = child.pointsAccessor.map(p => ({
           x: p.x + dx,
           y: p.y + dy,
+          data: p.data,
           p: p
         }))
         interactiveTree.addAll(points);

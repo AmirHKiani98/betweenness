@@ -77,7 +77,12 @@ function makeScene(canvas, options) {
     return sceneRoot.transform;
   }
 
-  function setClearColor(r, g, b, a) {
+  function setClearColor(color) {
+    // const color = new Color(1,1,1,1)
+    const r = color.r;
+    const g = color.g;
+    const b = color.b;
+    const a = color.a === undefined ? 1 : color.a
     gl.clearColor(r, g, b, a)
   }
 

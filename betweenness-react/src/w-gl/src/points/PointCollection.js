@@ -42,7 +42,7 @@ class PointCollection extends Element {
 
   add(point, data) {
     if (!point) throw new Error('Point is required');
-    // console.trace("Adding point", point);
+
     if (this.count >= this.capacity)  {
       this._extendArray();
     }
@@ -65,20 +65,12 @@ class PointCollection extends Element {
     // for interactivity... So, might as well implement this stuff. Remember anything
     // about premature optimization?
     // throw new Error('Cannot extend array at the moment :(')
-    const newCapacity = this.capacity * 2;
-    console.log(`Extending array. New capacity: ${newCapacity}`);
-    
-    const newBuffer = new Float32Array(newCapacity * ITEMS_PER_POINT);
-    console.log('Created new buffer for points.');
-    
-    newBuffer.set(this.pointsBuffer); // copy old data
-    console.log('Copied old data to the new buffer.');
-    
-    this.pointsBuffer = newBuffer;
-    console.log('Updated pointsBuffer to the new buffer.');
-    
+    // Amir: I think this is a good idea. We should be able to extend the array now.
+    const newCapacity = this.capacity * 2;    
+    const newBuffer = new Float32Array(newCapacity * ITEMS_PER_POINT);    
+    newBuffer.set(this.pointsBuffer); // copy old data    
+    this.pointsBuffer = newBuffer;    
     this.capacity = newCapacity;
-    console.log(`Capacity updated to: ${this.capacity}`);
   }
 }
 
