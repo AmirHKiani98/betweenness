@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 // Import missing functions or define them
-import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
+// import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
+// @ts-expect-error: TypeScript cannot validate the types from this JavaScript module
 import {WireCollection, PointCollection, PointAccessor, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
 import { NodeData } from '../types/graph';
@@ -10,7 +11,8 @@ import { RootState } from '../store/store';
 import { setX, setY} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
 function updateSVGElements(svgConntainer: SVGContainer) {
-
+    // Example usage: Log the SVG container or perform operations on it
+    console.log("Updating SVG elements with container:", svgConntainer);
 }
 
 const SELECTED_NODE_COLOR = new Color(0, 1, 0.5, 1);
