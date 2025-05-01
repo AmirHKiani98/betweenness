@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
 @theme {
     --color-main-50: oklch(0.97 0.03 240);
     --color-main-100: oklch(0.94 0.05 240);
