@@ -2,7 +2,7 @@ import "../App.css";
 import { motion } from "motion/react";
 import {TooltipWrapper} from "./TooltipWrapper";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh, faTruckField, faBezierCurve} from '@fortawesome/free-solid-svg-icons'
+import { faShareNodes, faPencil, faCircleDot, faSquareXmark, faSquareShareNodes, faCloudDownload, faRefresh, faTruckField, faBezierCurve, faPlay} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleDrawingNode, toggleDrawingLine, toggleRemovingNode, toggleRemovingLine, setTimeInterval, setJamDensity, setDuration } from '../store/graphSlice';
 import type { RootState } from '../store/store';
@@ -13,7 +13,7 @@ import { setOpenModal as setOpenFlowModal } from "../store/flowSlice";
 import { setOpenLinkModal as setOpenLinkModal } from "../store/linkSlice";
 import { setOpenNodeMetaModal as setOpenNodeMetaModal } from "../store/nodeMetaSlice";
 
-import { convertToCSV, downloadCSV} from "../store/nodeMetaSlice";
+import { convertToCSV, downloadCSV, sendFilesToBackend} from "../services/utilities";
 
 
 
@@ -30,6 +30,30 @@ export function Sidebar() {
     const timeInterval = useSelector((state: RootState) => state.graph.timeInterval);
     const jamDensity = useSelector((state: RootState) => state.graph.jamDensity);
     const duration = useSelector((state: RootState) => state.graph.duration);
+    const linkRows = useSelector((state: RootState) => state.links.rows);
+    const nodeMetaRows = useSelector((state: RootState) => state.nodeMeta.rows);
+    const demandRows = useSelector((state: RootState) => state.flow.rows);
+
+    function runCode() {
+        const nodeCSV = convertToCSV(nodeMetaRows);
+        const linkCSV = convertToCSV(linkRows);
+        const demandCSV = convertToCSV(demandRows);
+      
+        const paramsTXT = `dt ${timeInterval}\nduration ${duration}\njam_density ${jamDensity}`;
+      
+        const files = {
+          "nodes": nodeCSV,
+          "links": linkCSV,
+          "demand": demandCSV,
+          "params": paramsTXT
+        };
+      
+        // Option 1: Download locally
+        // Object.entries(files).forEach(([name, content]) => downloadCSV(name + ".txt", content));
+      
+        // Option 2: Send to backend and trigger run
+        sendFilesToBackend(files).then(console.log).catch(console.error);
+      }
     // console.log(isRemovingLine);
     return (
         <div className="p-4 bg-gray-200 h-full w-80 overflow-y-auto fixed right-0 top-0 z-50">
@@ -46,14 +70,14 @@ export function Sidebar() {
                 </motion.button>
             </TooltipWrapper>
 
-            <TooltipWrapper tooltipText="Calculates centerness score">
+            <TooltipWrapper tooltipText="Calculates closeness score">
                 <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className=""
-                onClick={() => console.log("Find Centerness")}
+                onClick={() => console.log("Find Closeness")}
                 >
-                Find Centerness
+                Find Closeness
                 </motion.button>
             </TooltipWrapper>
             <div className='flex items-center justify-between'>
@@ -230,6 +254,17 @@ export function Sidebar() {
                     />
                 </div>
             </div>
+
+            <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={() => {
+                    runCode();
+                }}>
+                    <FontAwesomeIcon icon={faPlay} />
+            </motion.button>
+
         </div>
     );
 }

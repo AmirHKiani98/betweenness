@@ -22,4 +22,18 @@ function downloadCSV(csv: string, filename: string): void {
     link.click();
     document.body.removeChild(link);
 }
-export {randomString, convertToCSV, downloadCSV};
+async function sendFilesToBackend(files: Record<string, string>) {
+    const formData = new FormData();
+    Object.entries(files).forEach(([name, content]) => {
+      formData.append(name, new Blob([content], { type: "text/plain" }), `${name}.txt`);
+    });
+  
+    const response = await fetch("http://localhost:8080/upload-and-run", {
+      method: "POST",
+      body: formData,
+    });
+  
+    if (!response.ok) throw new Error("Failed to upload or run backend simulation");
+    return await response.text();
+  }
+export {randomString, convertToCSV, downloadCSV, sendFilesToBackend};
