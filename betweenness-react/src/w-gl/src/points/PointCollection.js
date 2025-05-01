@@ -49,7 +49,7 @@ class PointCollection extends Element {
     let pointsBuffer = this.pointsBuffer;
     let internalNodeId = this.count;
     let offset = internalNodeId * ITEMS_PER_POINT;
-    let pointAccessor = new PointAccessor(pointsBuffer, offset, point.color || this.color, data);
+    let pointAccessor = new PointAccessor(pointsBuffer, offset, point.color || this.color, data, point.id);
 
     this.pointsAccessor.push(pointAccessor);
 

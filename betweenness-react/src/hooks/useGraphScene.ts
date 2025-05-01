@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 // Import missing functions or define them
 import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
-import {WireCollection, PointCollection, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
+import {WireCollection, PointCollection, PointAccessor, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
 import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 import {randomString} from "../services/utilities";
 import { RootState } from '../store/store';
+import { setSelectedNode, clearSelectedNode} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
 function updateSVGElements(svgConntainer: SVGContainer) {
 
 }
 
-const SELECTED_NODE_COLOR = new Color(0, 0.5, 0.5, 1);
+const SELECTED_NODE_COLOR = new Color(0, 1, 0.5, 1);
 const NODE_DEFAULT_COLOR = new Color(1,0,1,0);
 const BACKGROUND_COLOR = new Color(0, 0, 0, 0);
 
@@ -24,23 +25,21 @@ export function useGraphScene() {
     const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
     const isDrawingNode = useSelector((state: RootState) => (state.graph as { isDrawingNode: boolean }).isDrawingNode);
     const isDrawingNodeRef = useRef(isDrawingNode);
-    const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
-    const dispatch = useDispatch();
+    // const selectedNode = useSelector((state: RootState) => (state.graph as { selectedNode: string | null }).selectedNode);
+    const selectedNodeRef = useRef<PointAccessor | null>(null);
+
     
-    function clickOnNode(point){
-        console.log("Click on node");
-        const nodeId = point.id;
-        const node = graph.getNode(nodeId);
-        console.log("Node ID:", point);
+    function clickOnNode(point: PointAccessor) {
+        const node = graph.getNode(point.id);
         if (node) {
-            // Check if the node is already selected
-            if (selectedNode === nodeId) {
-                // Deselect the node
-                dispatch({ type: 'graph/clearSelectedNode' });
+            if (selectedNodeRef.current && selectedNodeRef.current.id === point.id) {
                 point.setColor(NODE_DEFAULT_COLOR);
+                selectedNodeRef.current = null;
             } else {
-                // Select the new node
-                dispatch({ type: 'graph/setSelectedNode', payload: nodeId });
+                if (selectedNodeRef.current) {
+                    selectedNodeRef.current.setColor(NODE_DEFAULT_COLOR);
+                }
+                selectedNodeRef.current = point;
                 point.setColor(SELECTED_NODE_COLOR);
             }
         }
@@ -139,22 +138,12 @@ export function useGraphScene() {
                 }
             });
             scene.on('point-click', (point, eventData) => {
-                
-                // console.log('Point entered:', point);
-                // console.log('Cursor position:', eventData.x, eventData.y);
-              
-                // // Example: Highlight the point
-                // point.p.setColor(new Color(0, 1, 0, 1)); // Change the point's color to green
-                // scene.renderFrame(); // Re-render the scene to apply the changes
-                clickOnNode(point);
+                if(!isDrawingNodeRef.current) {
+                    clickOnNode(point.p);
+                    scene.renderFrame();
+                };
             });
             
-            points.pointsAccessor.forEach(accessor => {
-                accessor.setColor(new Color(1, 0, 0, 1)); // red color
-            });
-            // scene.setClearColor(0, 0, 0, 1);
-            // points.size = 0.1; // Diameter of circle
-            // points.color = new Color(0, 0, 0, 1); // Black color
             scene.appendChild(points);
             
             // Create local WireCollection

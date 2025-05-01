@@ -1,13 +1,16 @@
 import Color from '../Color';
 
 class PointAccessor {
-  constructor(buffer, offset, color, data) {
+  constructor(buffer, offset, color, data, id) {
     this.offset = offset;
     this.buffer = buffer;
     this.color = color || new Color(1, 1, 1, 1); 
     console.log("Color:", this.color);
     if (data !== undefined) {
       this.data = data;
+    }
+    if(id !== undefined) {
+      this.id = id;
     }
   }
 
@@ -39,6 +42,8 @@ class PointAccessor {
     this.buffer[this.offset + 4] = color.g
     this.buffer[this.offset + 5] = color.b
   }
+  
+  
 }
 
 export default PointAccessor;
