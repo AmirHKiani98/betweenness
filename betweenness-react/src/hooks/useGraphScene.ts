@@ -7,32 +7,12 @@ import createGraph, { Graph } from 'ngraph.graph';
 import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
 import {randomString} from "../services/utilities";
-
+import { RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 function updateSVGElements(svgConntainer: SVGContainer) {
 
 }
 
-function modifyLinkSelect(graph: Graph<NodeData>) {
-    const toSelection = document.getElementById("to-selection");
-    const fromSelection = document.getElementById("from-selection");
-
-    if (toSelection && fromSelection) {
-        toSelection.innerHTML = "<option selected disabled>To</option>";
-        fromSelection.innerHTML = "<option selected disabled>From</option>";
-
-        graph.forEachNode((node: { id: string | number }) => {
-            const optionTo = document.createElement("option");
-            optionTo.textContent = node.id.toString();
-            toSelection.appendChild(optionTo);
-
-            const optionFrom = document.createElement("option");
-            optionFrom.textContent = node.id.toString();
-            fromSelection.appendChild(optionFrom);
-        });
-    } else {
-        console.error("Dropdown elements with IDs 'to-selection' or 'from-selection' not found");
-    }
-}
 
 
 
@@ -43,12 +23,21 @@ export function useGraphScene() {
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
     const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
     const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+    const isDrawingNode = useSelector((state: RootState) => state.graph.isDrawingNode);
+    const isDrawingNodeRef = useRef(isDrawingNode);
+    const dispatch = useDispatch();
 
     useEffect(() => {
+        isDrawingNodeRef.current = isDrawingNode; // ✅ just update ref
+      }, [isDrawingNode]);
+      
+    useEffect(() => {
+        
         if (!canvasRef.current) {
             console.error("Canvas element not found");
             return;
         }
+        isDrawingNodeRef.current = isDrawingNode;
 
         const initializeGraphWithExamples = () => {
             // Add example nodes
@@ -118,16 +107,17 @@ export function useGraphScene() {
                 }
             });
             scene.on('click', (pointData) => {
-                
-                const { sceneX, sceneY } = pointData;
-                const id = randomString(10);
-                const newNode = graph.addNode(id, { id: id, x: sceneX, y: sceneY });
-                console.log("Node added:", newNode);
-                if (newNode.data) {
-                    points.add(newNode.data); // assuming node.data has {x, y}
+                if (isDrawingNodeRef.current) {
+                  const { sceneX, sceneY } = pointData;
+                  const id = randomString(10);
+                  const newNode = graph.addNode(id, { id, x: sceneX, y: sceneY });
+                  console.log("Node added:", newNode);
+                  if (newNode.data) {
+                    points.add(newNode.data);
+                  }
+                  scene.renderFrame();
                 }
-                scene.renderFrame();
-            });
+              });
             points.pointsAccessor.forEach(accessor => {
                 accessor.setColor(new Color(1, 0, 0, 1)); // red color
             });

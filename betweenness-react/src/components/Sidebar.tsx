@@ -42,17 +42,32 @@ export function Sidebar() {
                 Find Centerness
                 </motion.button>
             </TooltipWrapper>
-            <div>
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`!w-20 !flex gap-2 justify-center ${isDrawingNode ? "!bg-blue-500 !text-white" : "!bg-gray-300 !text-gray-700"}`}
-                onClick={() => dispatch(toggleDrawingNode())}
-            >
-                <FontAwesomeIcon icon={faPencil} />
-                <FontAwesomeIcon icon={faShareNodes} />
+            <div className='flex items-center justify-between'>
+                <TooltipWrapper tooltipText="Activate drawing node">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`!w-20 !flex gap-2 justify-center ${isDrawingNode ? "!bg-blue-500 !text-white" : "!bg-gray-300 !text-gray-700"}`}
+                        onClick={() => dispatch(toggleDrawingNode())}
+                    >
+                        <FontAwesomeIcon icon={faPencil} />
+                        <FontAwesomeIcon icon={faShareNodes} />
 
-            </motion.button>
+                    </motion.button>
+                </TooltipWrapper>
+
+                <TooltipWrapper tooltipText="Activate drawing node" tooltipPosition={"left"}>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`!w-20 !flex gap-2 justify-center ${false ? "!bg-blue-500 !text-white" : "!bg-gray-300 !text-gray-700"}`}
+                        onClick={() => {}}
+                    >
+                        <FontAwesomeIcon icon={faPencil} />
+                        <FontAwesomeIcon icon={faShareNodes} />
+
+                    </motion.button>
+                </TooltipWrapper>
             </div>
             <h2 className="text-xl font-bold mt-4">Interactive Web</h2>
             

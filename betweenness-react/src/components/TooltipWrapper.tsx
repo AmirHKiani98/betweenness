@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import {computePosition} from "@floating-ui/reacts-dom";
+import {computePosition, Placement} from "@floating-ui/reacts-dom";
 
 import {
   useFloating,
@@ -13,9 +13,10 @@ import {
 import { ReactElement, useState, cloneElement } from "react";
 interface TooltipWrapperProps {
     tooltipText: string;
+    tooltipPosition: Placement;
     children: ReactElement;
   }
-export function TooltipWrapper({ tooltipText, children }: TooltipWrapperProps) {
+export function TooltipWrapper({ tooltipText, tooltipPosition = "top", children }: TooltipWrapperProps) {
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   
     const {
@@ -27,7 +28,7 @@ export function TooltipWrapper({ tooltipText, children }: TooltipWrapperProps) {
       onOpenChange: setIsTooltipOpen,
       middleware: [offset(8)],
       whileElementsMounted: autoUpdate,
-      placement: "top",
+      placement: tooltipPosition,
     });
   
     const hover = useHover(context);
