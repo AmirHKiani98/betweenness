@@ -11,6 +11,10 @@ class BaseLineCollection extends Element {
     this._program = null;
     this.color = new Color(1, 1, 1, 1);
     this.buffer = new Float32Array(capacity * this.itemsPerLine);
+    this.allAccessors = [];
+    this.from = null;
+    this.to = null;
+    this.id = null;
   }
 
   draw(gl, screen) {
@@ -36,12 +40,18 @@ class BaseLineCollection extends Element {
     if (this.count >= this.capacity)  {
       this._extendArray();
     }
-
+    this.from = line.from;
+    this.to = line.to;
+    this.id = line.id;
     var offset = this.count * this.itemsPerLine;
     var ui = this._addInternal(line, offset);
-
+    this.allAccessors.push(ui);
     this.count += 1;
     return ui;
+  }
+  
+  remove(identifier){
+
   }
 
   dispose() {

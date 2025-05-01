@@ -19,7 +19,7 @@ class LineCollection extends BaseLineCollection {
   _addInternal(line, offset) {
     // TODO: width
     let lineUI = new LineAccessor(this.buffer, offset);
-    lineUI.update(line.from, line.to)
+    lineUI.update(line.from, line.to, line.id)
     return lineUI;
   }
 }

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 // Import missing functions or define them
 // import { handleMouseDown, findBestBetweenness, resetGraph, addNodeFunction, addLink } from '../services/graphHandlers';
 // @ts-expect-error: TypeScript cannot validate the types from this JavaScript module
-import {WireCollection, PointCollection, PointAccessor, Color, scene as createScene, Scene, ActivePoints} from '../w-gl/index.js';
+import {LineCollection, PointCollection, PointAccessor, Color, scene as createScene, Scene, ActivePoints, ActiveLines} from '../w-gl/index.js';
 import createGraph, { Graph } from 'ngraph.graph';
 import { NodeData } from '../types/graph';
 import {SVGContainer} from "../services/SVGContainer";
@@ -12,7 +12,6 @@ import { setX, setY} from '../store/graphSlice';
 import { useDispatch, useSelector } from 'react-redux';
 function updateSVGElements(svgConntainer: SVGContainer) {
     // Example usage: Log the SVG container or perform operations on it
-    console.log("Updating SVG elements with container:", svgConntainer);
 }
 
 const SELECTED_NODE_COLOR = new Color(0, 1, 0.5, 1);
@@ -24,7 +23,7 @@ export function useGraphScene() {
     const [scene, setScene] = useState<Scene | null>(null);
     const [graph, setGraph] = useState<Graph<NodeData>>(createGraph<NodeData>());
     const [toAddNode, setToAddNode] = useState<NodeData | null>(null);
-    const [lines, setLines] = useState(() => new WireCollection(graph.getLinksCount()));
+    const [lines, setLines] = useState(() => new LineCollection(graph.getLinksCount()));
     const isDrawingNode = useSelector((state: RootState) => (state.graph as { isDrawingNode: boolean }).isDrawingNode);
     const isDrawingNodeRef = useRef(isDrawingNode);
     const isRemovingNode = useSelector((state: RootState) => (state.graph as { isRemovingNode: boolean }).isRemovingNode);
@@ -70,9 +69,9 @@ export function useGraphScene() {
             graph.addNode("C", { id: "C", x: 0, y: -5 });
 
             // Add example links
-            graph.addLink("A", "B");
-            graph.addLink("B", "C");
-            graph.addLink("C", "A");
+            graph.addLink("A", "B", { id: "link-AB" });
+            graph.addLink("B", "C", { id: "link-BC" });
+            graph.addLink("C", "A", { id: "link-CA" });
             
             // Wait for the dropdown elements to exist before updating them
         };
@@ -110,8 +109,9 @@ export function useGraphScene() {
             scene.setPixelRatio(1);
             scene.setViewBox({ left: -10, top: -10, right: 10, bottom: 10 });
             const activePoints = new ActivePoints(scene);
-            
+            const activeLines = new ActiveLines(scene);
             scene.appendChild(activePoints);
+            scene.appendChild(activeLines);
             // Initialize the SVG container
             const svgElement = document.querySelector("svg .scene");
             if (svgElement instanceof SVGGElement) {
@@ -158,16 +158,19 @@ export function useGraphScene() {
                     scene.renderFrame();
                 }
             });
-            
+            scene.on('line-click', (line) => {
+                console.log(line);
+            });
             scene.appendChild(points);
             
-            // Create local WireCollection
-            const lines = new WireCollection(graph.getLinksCount());
+            // Create local Linecollection
+            const lines = new LineCollection(graph.getLinksCount());
             graph.forEachLink((link) => {
+                const linkId = link.data.id;
                 const from = graph.getNode(link.fromId)?.data;
                 const to = graph.getNode(link.toId)?.data;
                 if (from && to) {
-                    lines.add({ from, to });
+                    lines.add({ from, to , id: linkId });
                 }
             });
 
@@ -189,7 +192,7 @@ export function useGraphScene() {
         return () => {
             window.removeEventListener("resize", resizeCanvas);
         };
-    }, []);
+    }, []); // TODO: There is a dependency issue here, I need to add the graph and lines to the dependencies, but it will cause an infinite loop. I need to find a way to handle this.
 
     return {
         canvasRef,

@@ -1,5 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+export type RootState = {
+  graph: {
+      isDrawingNode: boolean;
+      isDrawingLink: boolean;
+      isRemovingNode: boolean;
+      x: number | null;
+      y: number | null;
+  };
+};
 interface GraphState {
   isDrawingNode: boolean;
   isDrawingLink: boolean;
